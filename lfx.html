@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老凤祥珠宝 实时金价展示</title>
+    <style>
+        /* 全局样式 - 适配9:16竖屏 */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #a40000 0%, #c20000 100%);
+            color: #fff;
+            font-family: "Microsoft YaHei", sans-serif;
+            text-align: center;
+            overflow: hidden;
+            height: 100vh;
+            width: 56.25vh; /* 9/16=0.5625，基于高度计算宽度 */
+            max-width: 100vw;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: transform 0.5s ease;
+        }
+
+        /* 全屏样式 */
+        #fullscreen-toggle {
+            position: absolute;
+            bottom: 1.5vh;
+            left: 1.5vh;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.8vh 1.5vh;
+            border-radius: 0.4vh;
+            cursor: pointer;
+            font-size: 1.6vh;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        #fullscreen-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 旋转按钮样式 */
+        #rotate-button {
+            position: absolute;
+            bottom: 1.5vh;
+            right: 1.5vh;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.8vh 1.5vh;
+            border-radius: 0.4vh;
+            cursor: pointer;
+            font-size: 1.6vh;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        #rotate-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 顶部标题样式 */
+        header {
+            padding: 2vh 0 1vh 0;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 1.5vh;
+            border-radius: 0 0 1.5vh 1.5vh;
+            flex: 0 0 12vh;
+        }
+        h1 {
+            font-size: 5.5vh; /* 增加门店名称字体大小 */
+            margin: 0;
+            text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.3);
+            line-height: 1.2;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .date {
+            font-size: 3vh; /* 增加日期显示字体大小 */
+            margin: 0.5vh 0;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+
+        /* 设置按钮样式 */
+        .gear {
+            position: absolute;
+            top: 1.5vh;
+            right: 3vh;
+            font-size: 2.5vh;
+            cursor: pointer;
+            color: #ffd700;
+            transition: transform 0.3s;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            padding: 0.8vh;
+            width: 4vh;
+            height: 4vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gear:hover {
+            transform: rotate(30deg);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* 今日金价显示样式 */
+        .main-price-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1vh 1.5vh;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 1.5vh;
+            border-radius: 1.5vh;
+            flex: 0 0 15vh;
+        }
+        .price-label {
+            font-size: 3.5vh;
+            font-weight: bold;
+            margin-right: 2vh;
+            color: #ffd700;
+        }
+        .main-price {
+            font-size: 8vh;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1;
+            text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
+        }
+
+        /* 价格表格容器样式 */
+        .table-container {
+            background-color: #fff;
+            color: #a40000;
+            width: 94%;
+            margin: 0.5vh auto;
+            border-radius: 1.5vh;
+            padding: 1vh 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 0.4vh 1.5vh rgba(0,0,0,0.3);
+            border: 0.3vh solid #ffd700;
+            max-height: 40vh;
+        }
+        table {
+            width: 96%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-size: 2.8vh;
+            font-weight: bold;
+        }
+        th, td {
+            padding: 1vh 0;
+        }
+        th {
+            border-bottom: 0.5vh solid #a40000;
+            font-size: 3vh;
+            padding-bottom: 0.8vh;
+            color: #a40000;
+        }
+        td {
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #fff4f4;
+        }
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+        
+        /* 隐藏铂金、钯金、白银的销售价 */
+        .hide-price {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* 更新时间和底部标语样式 */
+        .update-time {
+            font-size: 2vh;
+            margin-top: 0.5vh;
+            color: #ffdfba;
+            flex-shrink: 0;
+            flex: 0 0 4vh;
+        }
+        .footer {
+            font-size: 2.8vh;
+            color: #ffd700;
+            padding: 1vh 0;
+            flex-shrink: 0;
+            font-weight: bold;
+            text-shadow: 0.2vh 0.2vh 0.4vh rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 1.5vh;
+            border-radius: 1.5vh 1.5vh 0 0;
+            flex: 0 0 8vh;
+        }
+
+        /* 管理面板样式 */
+        #adminPanel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            color: #000;
+            border-radius: 2vh;
+            padding: 3vh 4vh;
+            box-shadow: 0 0 4vh rgba(0,0,0,0.5);
+            width: 70vw;
+            max-width: 500px;
+            z-index: 999;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        #adminPanel h3 {
+            font-size: 2.5vh;
+            margin-bottom: 2vh;
+            color: #a40000;
+            text-align: center;
+        }
+        #adminPanel label {
+            display: block;
+            font-size: 2vh;
+            margin-top: 1.5vh;
+            color: #333;
+            font-weight: bold;
+        }
+        #adminPanel input {
+            width: 100%;
+            font-size: 2vh;
+            padding: 1vh;
+            margin-top: 0.5vh;
+            box-sizing: border-box;
+            border: 0.2vh solid #a40000;
+            border-radius: 0.8vh;
+        }
+        #adminPanel button {
+            margin-top: 2.5vh;
+            font-size: 2vh;
+            padding: 1.5vh 3vh;
+            background-color: #a40000;
+            color: #fff;
+            border: none;
+            border-radius: 1vh;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        #adminPanel button:hover {
+            background-color: #c20000;
+        }
+        
+        /* 遮罩层样式 */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+        
+        /* 添加一些动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(2vh); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* 旋转样式 - 添加不同的旋转角度 */
+        .rotate-0 {
+            transform: rotate(0deg);
+        }
+        .rotate-90 {
+            transform: rotate(90deg);
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+        .rotate-270 {
+            transform: rotate(270deg);
+        }
+        
+        /* 响应式设计 - 确保在竖屏设备上正常显示 */
+        @media (max-aspect-ratio: 9/16) {
+            body {
+                width: 100vw;
+                height: 177.8vw; /* 16/9=1.778，基于宽度计算高度 */
+            }
+        }
+    </style>
+</head>
+<body class="rotate-0">
+
+<!-- 全屏切换按钮 -->
+<button id="fullscreen-toggle">切换全屏</button>
+
+<!-- 旋转按钮 -->
+<button id="rotate-button">旋转视图</button>
+
+<!-- 设置按钮 -->
+<div class="gear" onclick="toggleAdmin()">⚙</div>
+
+<!-- 页面头部 -->
+<header class="fade-in">
+    <h1>老凤祥珠宝</h1>
+    <div class="date" id="dateDisplay"></div>
+</header>
+
+<!-- 今日金价显示 -->
+<div class="main-price-container fade-in">
+    <span class="price-label">今日金价：</span>
+    <div class="main-price" id="goldPrice">518</div>
+</div>
+
+<!-- 价格表格 -->
+<div class="table-container fade-in">
+    <table>
+        <tr>
+            <th>商品</th>
+            <th>销售价(元/克)</th>
+            <th>回收价(元/克)</th>
+        </tr>
+        <tr>
+            <td>黄金</td>
+            <td id="goldSell">518</td>
+            <td id="goldBuy">488</td>
+        </tr>
+        <tr>
+            <td>铂金990</td>
+            <td class="hide-price">-</td>
+            <td id="platinumBuy">265</td>
+        </tr>
+        <tr>
+            <td>钯金990</td>
+            <td class="hide-price">-</td>
+            <td id="palladiumBuy">320</td>
+        </tr>
+        <tr>
+            <td>白银</td>
+            <td class="hide-price">-</td>
+            <td id="silverBuy">6.5</td>
+        </tr>
+    </table>
+</div>
+
+<!-- 更新时间显示 -->
+<div class="update-time" id="updateTime">最后更新时间：加载中...</div>
+
+<!-- 底部标语 -->
+<div class="footer">有喜事，就有老凤祥</div>
+
+<!-- 管理面板和遮罩层 -->
+<div id="overlay" onclick="toggleAdmin()"></div>
+<div id="adminPanel">
+    <h3>价格设置</h3>
+    <label>黄金销售价：</label><input type="number" id="goldSellInput">
+    <label>黄金回收价：</label><input type="number" id="goldBuyInput">
+    <label>铂金990回收价：</label><input type="number" id="platinumBuyInput">
+    <label>钯金990回收价：</label><input type="number" id="palladiumBuyInput">
+    <label>白银回收价：</label><input type="number" id="silverBuyInput">
+    <button onclick="savePrices()">保存设置</button>
+</div>
+
+<script>
+    // 页面加载完成后自动进入全屏模式
+    window.addEventListener('DOMContentLoaded', (event) => {
+        // 等待页面完全加载后尝试进入全屏
+        setTimeout(() => {
+            toggleFullScreen();
+        }, 500);
+    });
+
+    // 全屏功能
+    function toggleFullScreen() {
+        const docEl = document.documentElement;
+        
+        if (!document.fullscreenElement) {
+            // 进入全屏
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen();
+            } else if (docEl.mozRequestFullScreen) {
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) {
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) {
+                docEl.msRequestFullscreen();
+            }
+        } else {
+            // 退出全屏
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+
+    // 更新全屏按钮文本
+    function updateFullscreenButton() {
+        const toggleBtn = document.getElementById('fullscreen-toggle');
+        if (document.fullscreenElement) {
+            toggleBtn.textContent = '退出全屏';
+        } else {
+            toggleBtn.textContent = '进入全屏';
+        }
+    }
+
+    // 监听全屏状态变化
+    document.addEventListener('fullscreenchange', updateFullscreenButton);
+    document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    document.addEventListener('msfullscreenchange', updateFullscreenButton);
+
+    // 为全屏按钮添加点击事件
+    document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullScreen);
+    
+    // 旋转功能
+    let currentRotation = 0;
+    const rotations = [0, 90, 180, 270];
+    
+    function rotateContent() {
+        // 获取当前旋转索引
+        const currentIndex = rotations.indexOf(currentRotation);
+        // 计算下一个旋转角度
+        const nextIndex = (currentIndex + 1) % rotations.length;
+        currentRotation = rotations[nextIndex];
+        
+        // 更新body的旋转类
+        document.body.className = `rotate-${currentRotation}`;
+        
+        // 更新旋转按钮文本显示当前角度
+        document.getElementById('rotate-button').textContent = `旋转: ${currentRotation}°`;
+    }
+    
+    // 为旋转按钮添加点击事件
+    document.getElementById('rotate-button').addEventListener('click', rotateContent);
+
+    // 更新日期显示
+    function updateDate() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth()+1).padStart(2,'0');
+        const d = String(now.getDate()).padStart(2,'0');
+        document.getElementById('dateDisplay').innerText = `${y}年${m}月${d}日`;
+    }
+    updateDate();
+
+    // 显示/隐藏管理面板
+    function toggleAdmin() {
+        const panel = document.getElementById('adminPanel');
+        const overlay = document.getElementById('overlay');
+        if (panel.style.display === 'block') {
+            panel.style.display = 'none';
+            overlay.style.display = 'none';
+        } else {
+            const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+            keys.forEach(k=>{
+                document.getElementById(k+'Input').value = localStorage.getItem(k) || document.getElementById(k).innerText;
+            });
+            panel.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+    }
+
+    // 保存价格设置到localStorage
+    function savePrices() {
+        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        keys.forEach(k=>{
+            const val = parseFloat(document.getElementById(k+'Input').value);
+            if(!isNaN(val)) localStorage.setItem(k,val);
+        });
+        updatePrices();
+        toggleAdmin();
+    }
+
+    // 平滑数字动画效果
+    function animateValue(el, start, end, duration=600) {
+        const range = end - start;
+        const startTime = performance.now();
+        
+        function frame(t) {
+            const p = Math.min((t - startTime)/duration,1);
+            const v = start + range * p;
+            el.innerText = v.toFixed(2).replace(/\.00$/,'');
+            if(p<1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    }
+
+    // 更新最后更新时间显示
+    function updateTimeLabel() {
+        const now = new Date();
+        document.getElementById('updateTime').innerText = "最后更新时间：" + now.toLocaleTimeString();
+    }
+
+    // 更新所有价格显示
+    function updatePrices(data={}) {
+        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        keys.forEach(k=>{
+            const el = document.getElementById(k);
+            if (el) {
+                const old = parseFloat(el.innerText) || 0;
+                const val = data[k] || parseFloat(localStorage.getItem(k)) || old;
+                animateValue(el, old, val);
+            }
+        });
+        document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || data.goldSell || 518;
+        updateTimeLabel();
+    }
+
+    // 自动获取实时黄金价格
+    async function fetchAutoGold() {
+        try {
+            const res = await fetch('https://i.jzj9999.com/quoteh5/');
+            const html = await res.text();
+            const sellMatch = html.match(/足金.*?实时价：([\d.]+)/);
+            const buyMatch = html.match(/足金回收价：([\d.]+)/);
+            const goldSell = sellMatch ? parseFloat(sellMatch[1]) : null;
+            const goldBuy = buyMatch ? parseFloat(buyMatch[1]) : null;
+            if (goldSell) localStorage.setItem('goldSell', goldSell);
+            if (goldBuy) localStorage.setItem('goldBuy', goldBuy);
+            updatePrices({goldSell, goldBuy});
+        } catch(e) {
+            console.log('自动更新金价失败，使用本地缓存');
+        }
+    }
+
+    // 初始加载价格，然后每5秒自动更新一次
+    updatePrices();
+    setInterval(fetchAutoGold, 5000);
+</script>
+</body>
+</html>
