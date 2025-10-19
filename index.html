@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老凤祥珠宝 实时金价展示</title>
+    <!-- 引入 Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         /* 全局样式 - 适配9:16竖屏 */
         body {
@@ -297,6 +300,62 @@
             cursor: default;
         }
         
+        /* 密码验证面板 */
+        #passwordPanel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            color: #000;
+            border-radius: 2vh;
+            padding: 3vh 4vh;
+            box-shadow: 0 0 4vh rgba(0,0,0,0.5);
+            width: 70vw;
+            max-width: 400px;
+            z-index: 1000;
+            text-align: center;
+        }
+        #passwordPanel h3 {
+            font-size: 2.5vh;
+            margin-bottom: 2vh;
+            color: #a40000;
+        }
+        #passwordPanel input {
+            width: 100%;
+            font-size: 2vh;
+            padding: 1.5vh;
+            margin-top: 0.5vh;
+            box-sizing: border-box;
+            border: 0.2vh solid #a40000;
+            border-radius: 0.8vh;
+            text-align: center;
+            letter-spacing: 0.5vh;
+        }
+        #passwordPanel button {
+            margin-top: 2vh;
+            font-size: 2vh;
+            padding: 1.5vh 3vh;
+            background-color: #a40000;
+            color: #fff;
+            border: none;
+            border-radius: 1vh;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        #passwordPanel button:hover {
+            background-color: #c20000;
+        }
+        #passwordError {
+            color: #ff0000;
+            font-size: 1.6vh;
+            margin-top: 1vh;
+            display: none;
+        }
+        
         /* 添加一些动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(2vh); }
@@ -329,7 +388,7 @@
             }
         }
         
-        /* 同步提示 */
+        /* 同步提示和连接状态 */
         .sync-notice {
             position: fixed;
             top: 10px;
@@ -342,9 +401,49 @@
             z-index: 1000;
             font-size: 14px;
         }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        .connection-dot.disconnected {
+            background-color: #f44336;
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body class="rotate-0">
+
+<!-- 连接状态指示器 -->
+<div class="connection-status">
+    <div class="connection-dot" id="connectionDot"></div>
+    <span id="connectionText">连接中...</span>
+</div>
 
 <!-- 全屏切换按钮 -->
 <button id="fullscreen-toggle">切换全屏</button>
@@ -353,7 +452,7 @@
 <button id="rotate-button">旋转视图</button>
 
 <!-- 设置按钮 -->
-<div class="gear" onclick="toggleAdmin()">⚙</div>
+<div class="gear" onclick="requestAdmin()">⚙</div>
 
 <!-- 同步提示 -->
 <div class="sync-notice" id="syncNotice">数据已同步</div>
@@ -407,8 +506,17 @@
 <!-- 底部标语 -->
 <div class="footer">有囍事，就有老凤祥</div> <!-- 将"喜"改为"囍" -->
 
+<!-- 密码验证面板 -->
+<div id="passwordPanel">
+    <h3>请输入管理员密码</h3>
+    <input type="password" id="passwordInput" placeholder="输入密码" maxlength="6">
+    <div id="passwordError">密码错误，请重试</div>
+    <button onclick="checkPassword()">确认</button>
+    <button onclick="cancelPassword()" style="margin-top: 1vh; background-color: #666;">取消</button>
+</div>
+
 <!-- 管理面板和遮罩层 -->
-<div id="overlay" onclick="toggleAdmin()"></div>
+<div id="overlay" onclick="cancelAdmin()"></div>
 <div id="adminPanel">
     <h3>价格设置</h3>
     <label>黄金销售价(元/克)：</label><input type="number" id="goldSellInput">
@@ -417,18 +525,41 @@
     <label>钯金990回收价(元/克)：</label><input type="number" id="palladiumBuyInput">
     <label>白银回收价(元/克)：</label><input type="number" id="silverBuyInput">
     <button onclick="savePrices()">保存设置</button>
+    <button onclick="cancelAdmin()" style="margin-top: 1vh; background-color: #666;">取消</button>
 </div>
 
 <script>
+    // Firebase配置
+    const firebaseConfig = {
+        apiKey: "AIzaSyCjBOSjFnZ9K1tzCQsIhYKQ8uCRG20I62Q",
+        authDomain: "lfx-gold-display.firebaseapp.com",
+        databaseURL: "https://lfx-gold-display-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "lfx-gold-display",
+        storageBucket: "lfx-gold-display.firebasestorage.app",
+        messagingSenderId: "76661746887",
+        appId: "1:76661746887:web:914c61e18ddf8097cfa2e2"
+    };
+
+    // 初始化Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
     // 全局变量
     let currentRotation = 0;
     const rotations = [0, 90, 180, 270];
     let controlsTimeout;
     let isShowingControls = false;
     let isAdminMode = false;
+    let firebaseInitialized = false;
     
-    // 页面加载完成后自动进入全屏模式
+    // 默认密码 (可以更改为您需要的密码)
+    const ADMIN_PASSWORD = "procyon4869";
+    
+    // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', (event) => {
+        // 初始化Firebase连接
+        initializeFirebase();
+        
         // 等待页面完全加载后尝试进入全屏
         setTimeout(() => {
             toggleFullScreen();
@@ -443,9 +574,68 @@
         // 加载价格设置
         loadPrices();
         
-        // 开始同步数据
-        startDataSync();
+        // 设置密码输入框监听器
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
     });
+    
+    // 初始化Firebase连接
+    function initializeFirebase() {
+        // 监听连接状态
+        const connectedRef = firebase.database().ref(".info/connected");
+        connectedRef.on("value", function(snap) {
+            if (snap.val() === true) {
+                document.getElementById("connectionDot").className = "connection-dot";
+                document.getElementById("connectionText").textContent = "实时同步已连接";
+                console.log("Firebase连接成功");
+                
+                // 首次连接时设置监听器
+                if (!firebaseInitialized) {
+                    setupFirebaseListeners();
+                    firebaseInitialized = true;
+                }
+            } else {
+                document.getElementById("connectionDot").className = "connection-dot disconnected";
+                document.getElementById("connectionText").textContent = "连接断开，使用本地数据";
+                console.warn("Firebase连接断开");
+            }
+        });
+    }
+    
+    // 设置Firebase监听器
+    function setupFirebaseListeners() {
+        // 监听价格变化
+        const pricesRef = database.ref('prices');
+        pricesRef.on('value', (snapshot) => {
+            const prices = snapshot.val();
+            if (prices) {
+                console.log('从Firebase接收价格更新:', prices);
+                updatePrices(prices);
+                showSyncNotice('价格已同步更新');
+                
+                // 同时更新本地存储
+                Object.keys(prices).forEach(key => {
+                    localStorage.setItem(key, prices[key]);
+                });
+            }
+        });
+    }
+    
+    // 保存价格到Firebase
+    function savePricesToFirebase(prices) {
+        database.ref('prices').set(prices)
+            .then(() => {
+                console.log('价格已保存到Firebase');
+                showSyncNotice('价格已保存并同步');
+            })
+            .catch((error) => {
+                console.error('保存到Firebase失败:', error);
+                showSyncNotice('同步失败，使用本地存储', true);
+            });
+    }
     
     // 自动隐藏控制按钮
     function hideControls() {
@@ -542,27 +732,73 @@
     }
     updateDate();
     
-    // 显示/隐藏管理面板
-    function toggleAdmin() {
-        const panel = document.getElementById('adminPanel');
-        const overlay = document.getElementById('overlay');
-        
-        if (panel.style.display === 'block') {
-            panel.style.display = 'none';
-            overlay.style.display = 'none';
-            isAdminMode = false;
-            hideControls(); // 退出管理员模式后隐藏控制按钮
+    // 请求管理员权限（显示密码面板）
+    function requestAdmin() {
+        showPasswordPanel();
+    }
+    
+    // 显示密码面板
+    function showPasswordPanel() {
+        document.getElementById('passwordPanel').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordError').style.display = 'none';
+        document.getElementById('passwordInput').focus();
+    }
+    
+    // 隐藏密码面板
+    function hidePasswordPanel() {
+        document.getElementById('passwordPanel').style.display = 'none';
+    }
+    
+    // 验证密码
+    function checkPassword() {
+        const password = document.getElementById('passwordInput').value;
+        if (password === ADMIN_PASSWORD) {
+            hidePasswordPanel();
+            showAdminPanel();
         } else {
-            const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
-            keys.forEach(k=>{
-                document.getElementById(k+'Input').value = localStorage.getItem(k) || document.getElementById(k).innerText;
-            });
-            panel.style.display = 'block';
-            overlay.style.display = 'block';
-            isAdminMode = true;
-            // 管理员模式下显示控制按钮
-            document.body.classList.add('show-controls');
+            document.getElementById('passwordError').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
         }
+    }
+    
+    // 取消密码输入
+    function cancelPassword() {
+        hidePasswordPanel();
+        hideOverlay();
+    }
+    
+    // 显示管理面板
+    function showAdminPanel() {
+        const panel = document.getElementById('adminPanel');
+        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        keys.forEach(k=>{
+            document.getElementById(k+'Input').value = localStorage.getItem(k) || document.getElementById(k).innerText;
+        });
+        panel.style.display = 'block';
+        isAdminMode = true;
+        // 管理员模式下显示控制按钮
+        document.body.classList.add('show-controls');
+    }
+    
+    // 隐藏管理面板
+    function hideAdminPanel() {
+        document.getElementById('adminPanel').style.display = 'none';
+    }
+    
+    // 隐藏遮罩层
+    function hideOverlay() {
+        document.getElementById('overlay').style.display = 'none';
+    }
+    
+    // 取消管理员模式
+    function cancelAdmin() {
+        hideAdminPanel();
+        hideOverlay();
+        isAdminMode = false;
+        hideControls(); // 退出管理员模式后隐藏控制按钮
     }
     
     // 加载价格设置
@@ -578,20 +814,24 @@
         updateTimeLabel();
     }
     
-    // 保存价格设置到localStorage
+    // 保存价格设置
     function savePrices() {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        const prices = {};
+        
         keys.forEach(k=>{
             const val = parseFloat(document.getElementById(k+'Input').value);
             if(!isNaN(val)) {
                 localStorage.setItem(k, val);
-                // 同步到云端
-                syncToCloud();
+                prices[k] = val;
             }
         });
+        
+        // 同步到Firebase
+        savePricesToFirebase(prices);
+        
         updatePrices();
-        toggleAdmin();
-        showSyncNotice();
+        cancelAdmin();
     }
     
     // 平滑数字动画效果
@@ -630,59 +870,15 @@
     }
     
     // 显示同步通知
-    function showSyncNotice() {
+    function showSyncNotice(message, isError = false) {
         const notice = document.getElementById('syncNotice');
+        notice.textContent = message;
+        notice.style.backgroundColor = isError ? 'rgba(244, 67, 54, 0.7)' : 'rgba(0, 0, 0, 0.7)';
         notice.style.display = 'block';
+        
         setTimeout(() => {
             notice.style.display = 'none';
         }, 2000);
-    }
-    
-    // 模拟云同步 - 使用 localStorage 模拟(实际应该使用服务器API)
-    function syncToCloud() {
-        const goldPrices = {
-            goldSell: localStorage.getItem('goldSell'),
-            goldBuy: localStorage.getItem('goldBuy'),
-            platinumBuy: localStorage.getItem('platinumBuy'),
-            palladiumBuy: localStorage.getItem('palladiumBuy'),
-            silverBuy: localStorage.getItem('silverBuy')
-        };
-        
-        // 模拟延迟上传到云端
-        setTimeout(() => {
-            // 在实际应用中，这里应该发送到服务器
-            console.log('数据已上传到云端:', goldPrices);
-        }, 500);
-    }
-    
-    // 从云端同步数据
-    function syncFromCloud() {
-        // 模拟从云端获取数据
-        setTimeout(() => {
-            // 在实际应用中，这里应该从服务器获取数据
-            const lastSync = localStorage.getItem('lastSync');
-            const currentPrices = {
-                goldSell: localStorage.getItem('goldSell'),
-                goldBuy: localStorage.getItem('goldBuy'),
-                platinumBuy: localStorage.getItem('platinumBuy'),
-                palladiumBuy: localStorage.getItem('palladiumBuy'),
-                silverBuy: localStorage.getItem('silverBuy')
-            };
-            
-            // 模拟检查是否需要更新
-            const shouldUpdate = true; // 在实际应用中，应根据时间戳或版本判断
-            
-            if (shouldUpdate) {
-                updatePrices(currentPrices);
-                console.log('从云端同步数据完成');
-            }
-        }, 500);
-    }
-    
-    // 开始数据同步循环
-    function startDataSync() {
-        // 每30秒检查一次云端更新
-        setInterval(syncFromCloud, 30000);
     }
     
     // 自动获取实时黄金价格
