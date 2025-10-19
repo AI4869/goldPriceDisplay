@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>老凤祥珠宝 金价展示</title>
+    <title>老凤祥珠宝 金价展示 (电视端优化)</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
@@ -31,126 +31,121 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            font-size: 32px; /* 基准字体大小 */
         }
         
-        /* 主容器 - 针对电视机大屏幕优化 */
+        /* 主容器 - 针对4K电视机优化 */
         .container {
-            width: 80vh;
-            height: 100vh;
-            max-width: 100vw;
+            width: 1920px; /* 适配4K电视宽度 */
+            height: 1080px; /* 适配4K电视高度 */
             display: flex;
             flex-direction: column;
             position: relative;
             transform: rotate(0deg);
             transition: transform 0.5s ease;
             background: inherit;
+            max-width: 100%;
+            max-height: 100%;
         }
         
-        /* 旋转后的样式 - 适配竖屏电视机 */
+        /* 9:16竖屏模式 */
         .container.rotated-90 {
             transform: rotate(90deg);
-            width: 100vh;
-            height: 177.8vh;
-            transform-origin: center center;
-        }
-        
-        .container.rotated-270 {
-            transform: rotate(270deg);
-            width: 100vh;
-            height: 177.8vh;
+            width: 1080px;
+            height: 1920px;
             transform-origin: center center;
         }
         
         /* 顶部标题区域 */
         .header {
-            padding: 4vh 0;
+            padding: 60px 0;
             text-align: center;
             background: rgba(0, 0, 0, 0.1);
-            margin: 0 2vh;
-            border-radius: 0 0 3vh 3vh;
-            flex: 0 0 20vh;
+            margin: 0 40px;
+            border-radius: 0 0 30px 30px;
+            flex: 0 0 200px;
         }
         
         .header h1 {
-            font-size: 12vh;
+            font-size: 100px;
             margin: 0;
-            text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.3);
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.3);
             color: var(--gold);
             font-weight: 900;
-            letter-spacing: 0.5vh;
+            letter-spacing: 5px;
         }
         
         .date {
-            font-size: 6vh;
-            margin-top: 1vh;
+            font-size: 50px;
+            margin-top: 10px;
             font-weight: 700;
-            text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
         }
         
-        /* 今日金价显示区域 - 显著放大 */
+        /* 今日金价显示区域 */
         .gold-price-today {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 3vh 2vh;
+            margin: 30px 40px;
             background: rgba(255, 215, 0, 0.15);
-            padding: 3vh;
-            border-radius: 2vh;
-            flex: 0 0 22vh;
-            border: 0.5vh solid rgba(255, 215, 0, 0.3);
+            padding: 30px;
+            border-radius: 20px;
+            flex: 0 0 220px;
+            border: 5px solid rgba(255, 215, 0, 0.3);
         }
         
         .gold-price-label {
-            font-size: 7vh;
+            font-size: 70px;
             font-weight: 900;
-            margin-right: 4vh;
+            margin-right: 40px;
             color: var(--gold);
-            text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.4);
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.4);
         }
         
         .gold-price-value {
-            font-size: 12vh;
+            font-size: 140px;
             font-weight: 900;
-            text-shadow: 0.4vh 0.4vh 1vh rgba(0,0,0,0.5);
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.5);
             color: #fff9c4;
-            letter-spacing: 0.3vw;
+            letter-spacing: 5px;
         }
         
-        /* 价格表格区域 - 显著放大 */
+        /* 价格表格区域 */
         .price-table-container {
             background-color: var(--white);
             color: var(--primary-red);
             width: 94%;
             margin: 0 auto;
-            border-radius: 3vh;
-            padding: 2.5vh 0;
+            border-radius: 30px;
+            padding: 25px 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 0.5vh 2vh rgba(0,0,0,0.4);
-            border: 0.5vh solid var(--gold);
-            max-height: 45vh;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            border: 5px solid var(--gold);
+            max-height: 500px;
         }
         
         .price-table {
             width: 96%;
             margin: 0 auto;
             border-collapse: collapse;
-            font-size: 5vh;
+            font-size: 55px;
             font-weight: 700;
         }
         
         .price-table th, .price-table td {
-            padding: 2.5vh 0;
+            padding: 25px 0;
             text-align: center;
         }
         
         .price-table th {
-            border-bottom: 0.8vh solid var(--primary-red);
-            font-size: 5.5vh;
-            padding-bottom: 2vh;
+            border-bottom: 8px solid var(--primary-red);
+            font-size: 60px;
+            padding-bottom: 20px;
             color: var(--primary-red);
             font-weight: 900;
         }
@@ -169,7 +164,7 @@
         }
         
         .price-unit {
-            font-size: 3vh;
+            font-size: 35px;
             color: #999;
         }
         
@@ -180,34 +175,34 @@
         
         /* 底部区域 */
         .footer {
-            font-size: 6vh;
+            font-size: 65px;
             color: var(--gold);
-            padding: 2.5vh 0;
+            padding: 25px 0;
             font-weight: 900;
-            text-shadow: 0.3vh 0.3vh 0.6vh rgba(0,0,0,0.4);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
             background: rgba(0, 0, 0, 0.1);
-            margin: 0 2vh;
-            border-radius: 3vh 3vh 0 0;
-            flex: 0 0 15vh;
+            margin: 0 40px;
+            border-radius: 30px 30px 0 0;
+            flex: 0 0 150px;
             text-align: center;
         }
         
         .update-time {
-            font-size: 3.5vh;
+            font-size: 35px;
             color: #ffdfba;
             text-align: center;
-            padding: 1.5vh 0;
-            flex: 0 0 6vh;
+            padding: 15px 0;
+            flex: 0 0 60px;
             font-weight: 600;
         }
         
         /* 控制按钮 */
         .controls {
             position: absolute;
-            top: 1.5vh;
-            right: 3vh;
+            top: 15px;
+            right: 30px;
             display: flex;
-            gap: 1.5vh;
+            gap: 15px;
             z-index: 100;
             opacity: 0;
             transition: opacity 0.3s;
@@ -221,13 +216,13 @@
             background-color: rgba(255, 255, 255, 0.3);
             border: none;
             color: white;
-            padding: 1.5vh 2.5vh;
-            border-radius: 1vh;
+            padding: 15px 25px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 3vh;
+            font-size: 30px;
             font-weight: 600;
             transition: background 0.3s;
-            border: 0.2vh solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
         .control-btn:hover {
@@ -243,17 +238,17 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: 2.5vh;
-            padding: 4vh;
-            box-shadow: 0 0 6vh rgba(0,0,0,0.6);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.6);
             width: 90vw;
-            max-width: 700px;
+            max-width: 800px;
             z-index: 1000;
         }
         
         .admin-panel h3 {
-            font-size: 5vh;
-            margin-bottom: 3vh;
+            font-size: 50px;
+            margin-bottom: 30px;
             color: var(--primary-red);
             text-align: center;
             font-weight: 900;
@@ -261,30 +256,30 @@
         
         .admin-panel label {
             display: block;
-            font-size: 4vh;
-            margin-top: 2.5vh;
+            font-size: 40px;
+            margin-top: 25px;
             color: #333;
             font-weight: 700;
         }
         
         .admin-panel input {
             width: 100%;
-            font-size: 4vh;
-            padding: 2vh;
-            margin-top: 1vh;
-            border: 0.3vh solid var(--primary-red);
-            border-radius: 1.2vh;
+            font-size: 40px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 3px solid var(--primary-red);
+            border-radius: 12px;
             font-weight: 600;
         }
         
         .admin-panel button {
-            margin-top: 3.5vh;
-            font-size: 4vh;
-            padding: 2.5vh;
+            margin-top: 35px;
+            font-size: 40px;
+            padding: 25px;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: 1.5vh;
+            border-radius: 15px;
             cursor: pointer;
             width: 100%;
             font-weight: 700;
@@ -310,9 +305,9 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: 2.5vh;
-            padding: 4vh;
-            box-shadow: 0 0 6vh rgba(0,0,0,0.6);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.6);
             width: 90vw;
             max-width: 600px;
             z-index: 1001;
@@ -320,32 +315,32 @@
         }
         
         .password-panel h3 {
-            font-size: 5vh;
-            margin-bottom: 3vh;
+            font-size: 50px;
+            margin-bottom: 30px;
             color: var(--primary-red);
             font-weight: 900;
         }
         
         .password-panel input {
             width: 100%;
-            font-size: 4vh;
-            padding: 2.5vh;
-            margin-top: 1vh;
-            border: 0.3vh solid var(--primary-red);
-            border-radius: 1.2vh;
+            font-size: 40px;
+            padding: 25px;
+            margin-top: 10px;
+            border: 3px solid var(--primary-red);
+            border-radius: 12px;
             text-align: center;
-            letter-spacing: 0.8vh;
+            letter-spacing: 8px;
             font-weight: 600;
         }
         
         .password-panel button {
-            margin-top: 3vh;
-            font-size: 4vh;
-            padding: 2.5vh;
+            margin-top: 30px;
+            font-size: 40px;
+            padding: 25px;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: 1.5vh;
+            border-radius: 15px;
             cursor: pointer;
             width: 100%;
             font-weight: 700;
@@ -353,8 +348,8 @@
         
         .password-error {
             color: #ff0000;
-            font-size: 3vh;
-            margin-top: 2vh;
+            font-size: 30px;
+            margin-top: 20px;
             display: none;
             font-weight: 600;
         }
@@ -362,13 +357,13 @@
         /* 连接状态指示器 */
         .connection-status {
             position: fixed;
-            top: 1vh;
-            left: 1vh;
+            top: 10px;
+            left: 10px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 1vh 2vh;
-            border-radius: 1vh;
-            font-size: 3vh;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 30px;
             display: flex;
             align-items: center;
             z-index: 100;
@@ -376,10 +371,10 @@
         }
         
         .connection-dot {
-            width: 1.5vh;
-            height: 1.5vh;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
-            margin-right: 1vh;
+            margin-right: 10px;
             background-color: #4CAF50;
             animation: pulse 2s infinite;
         }
@@ -397,12 +392,48 @@
         
         /* 动画效果 */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(2vh); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         .fade-in {
             animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* 媒体查询 - 适配不同设备 */
+        @media (max-width: 3840px) {
+            body {
+                font-size: 24px;
+            }
+            .container {
+                transform: scale(0.7);
+            }
+        }
+        
+        @media (max-width: 1920px) {
+            .container {
+                transform: scale(0.6);
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                transform: scale(0.5);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                transform: scale(0.4);
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .container {
+                width: 100%;
+                height: 100%;
+                transform: rotate(90deg) scale(0.3);
+            }
         }
     </style>
 </head>
@@ -479,7 +510,7 @@
     <input type="password" id="passwordInput" placeholder="请输入密码" maxlength="20">
     <div class="password-error" id="passwordError">密码错误，请重新输入</div>
     <button id="submitPassword">确认</button>
-    <button id="cancelPassword" style="margin-top: 2vh; background-color: #666;">取消</button>
+    <button id="cancelPassword" style="margin-top: 20px; background-color: #666;">取消</button>
 </div>
 
 <!-- 管理面板 -->
@@ -496,7 +527,7 @@
     <label>白银回收价(元/克)：</label>
     <input type="number" id="silverBuyInput">
     <button id="savePrices">保存设置</button>
-    <button id="closeAdmin" style="margin-top: 2vh; background-color: #666;">关闭</button>
+    <button id="closeAdmin" style="margin-top: 20px; background-color: #666;">取消</button>
 </div>
 
 <script>
@@ -568,12 +599,10 @@
             if (snap.val() === true) {
                 document.getElementById("connectionDot").className = "connection-dot";
                 document.getElementById("connectionText").textContent = "实时同步已连接";
-                console.log("Firebase连接成功");
                 setupFirebaseListeners();
             } else {
                 document.getElementById("connectionDot").className = "connection-dot disconnected";
                 document.getElementById("connectionText").textContent = "连接断开";
-                console.warn("Firebase连接断开");
             }
         });
     }
@@ -585,7 +614,6 @@
         pricesRef.on('value', (snapshot) => {
             const prices = snapshot.val();
             if (prices) {
-                console.log('从Firebase接收价格更新:', prices);
                 updatePrices(prices);
                 
                 // 更新本地存储
@@ -642,7 +670,6 @@
             // 进入全屏
             if (element.requestFullscreen) {
                 element.requestFullscreen().catch(err => {
-                    console.error('全屏请求失败:', err);
                     showNotification('全屏模式不可用: ' + err.message);
                 });
             } else if (element.webkitRequestFullscreen) {
@@ -679,10 +706,10 @@
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.8);
             color: white;
-            padding: 3vh;
-            border-radius: 1.5vh;
+            padding: 30px;
+            border-radius: 15px;
             z-index: 10000;
-            font-size: 3.5vh;
+            font-size: 35px;
         `;
         document.body.appendChild(notification);
         
