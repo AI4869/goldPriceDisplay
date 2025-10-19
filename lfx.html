@@ -72,59 +72,63 @@
         }
         
         .header h1 {
-            font-size: 5vh;
+            font-size: 5.5vh;
             margin: 0;
             text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
             color: var(--gold);
-            font-weight: bold;
+            font-weight: 900;
         }
         
         .date {
-            font-size: 2.8vh;
-            margin-top: 0.5vh;
-            font-weight: bold;
+            font-size: 3.2vh;
+            margin-top: 0.8vh;
+            font-weight: 700;
         }
         
-        /* 今日金价显示区域 */
+        /* 今日金价显示区域 - 显著放大 */
         .gold-price-today {
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 1.5vh 2vh;
-            background: rgba(255, 215, 0, 0.1);
-            padding: 1.5vh;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 2vh;
             border-radius: 1.5vh;
-            flex: 0 0 16vh;
+            flex: 0 0 18vh;
+            border: 0.4vh solid rgba(255, 215, 0, 0.3);
         }
         
         .gold-price-label {
-            font-size: 3.5vh;
-            font-weight: bold;
-            margin-right: 2vh;
+            font-size: 4.5vh;
+            font-weight: 900;
+            margin-right: 3vh;
             color: var(--gold);
+            text-shadow: 0.2vh 0.2vh 0.6vh rgba(0,0,0,0.4);
         }
         
         .gold-price-value {
-            font-size: 7vh;
-            font-weight: bold;
-            text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
+            font-size: 9vh;
+            font-weight: 900;
+            text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.5);
+            color: #fff9c4;
+            letter-spacing: 0.1vw;
         }
         
-        /* 价格表格区域 */
+        /* 价格表格区域 - 放大字体和粗细 */
         .price-table-container {
             background-color: var(--white);
             color: var(--primary-red);
             width: 94%;
             margin: 0 auto;
-            border-radius: 2vh;
-            padding: 1.5vh 0;
+            border-radius: 2.5vh;
+            padding: 2vh 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 0.4vh 1.5vh rgba(0,0,0,0.3);
-            border: 0.3vh solid var(--gold);
+            box-shadow: 0 0.5vh 2vh rgba(0,0,0,0.4);
+            border: 0.4vh solid var(--gold);
             max-height: 45vh;
         }
         
@@ -132,24 +136,26 @@
             width: 96%;
             margin: 0 auto;
             border-collapse: collapse;
-            font-size: 2.8vh;
-            font-weight: bold;
+            font-size: 3.2vh;
+            font-weight: 700;
         }
         
         .price-table th, .price-table td {
-            padding: 1.2vh 0;
+            padding: 1.6vh 0;
             text-align: center;
         }
         
         .price-table th {
-            border-bottom: 0.5vh solid var(--primary-red);
-            font-size: 3vh;
-            padding-bottom: 1vh;
+            border-bottom: 0.6vh solid var(--primary-red);
+            font-size: 3.5vh;
+            padding-bottom: 1.5vh;
             color: var(--primary-red);
+            font-weight: 900;
         }
         
         .price-table td {
-            color: #333;
+            color: #222;
+            font-weight: 700;
         }
         
         .price-table tr:nth-child(even) {
@@ -161,7 +167,7 @@
         }
         
         .price-unit {
-            font-size: 1.8vh;
+            font-size: 2.2vh;
             color: #999;
         }
         
@@ -172,24 +178,25 @@
         
         /* 底部区域 */
         .footer {
-            font-size: 3.5vh;
+            font-size: 4vh;
             color: var(--gold);
-            padding: 1.5vh 0;
-            font-weight: bold;
-            text-shadow: 0.2vh 0.2vh 0.4vh rgba(0,0,0,0.3);
+            padding: 1.8vh 0;
+            font-weight: 900;
+            text-shadow: 0.3vh 0.3vh 0.6vh rgba(0,0,0,0.4);
             background: rgba(0, 0, 0, 0.1);
             margin: 0 2vh;
             border-radius: 2vh 2vh 0 0;
-            flex: 0 0 10vh;
+            flex: 0 0 12vh;
             text-align: center;
         }
         
         .update-time {
-            font-size: 2vh;
+            font-size: 2.5vh;
             color: #ffdfba;
             text-align: center;
-            padding: 0.5vh 0;
-            flex: 0 0 4vh;
+            padding: 1vh 0;
+            flex: 0 0 5vh;
+            font-weight: 600;
         }
         
         /* 控制按钮 */
@@ -209,18 +216,20 @@
         }
         
         .control-btn {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.3);
             border: none;
             color: white;
-            padding: 1vh 1.5vh;
-            border-radius: 0.5vh;
+            padding: 1.2vh 2vh;
+            border-radius: 0.8vh;
             cursor: pointer;
-            font-size: 1.6vh;
+            font-size: 2vh;
+            font-weight: 600;
             transition: background 0.3s;
+            border: 0.2vh solid rgba(255,255,255,0.2);
         }
         
         .control-btn:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.4);
         }
         
         /* 管理面板 */
@@ -232,49 +241,51 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: 2vh;
-            padding: 3vh;
-            box-shadow: 0 0 4vh rgba(0,0,0,0.5);
-            width: 80vw;
-            max-width: 500px;
+            border-radius: 2.5vh;
+            padding: 3.5vh;
+            box-shadow: 0 0 4.5vh rgba(0,0,0,0.6);
+            width: 85vw;
+            max-width: 550px;
             z-index: 1000;
         }
         
         .admin-panel h3 {
-            font-size: 2.5vh;
-            margin-bottom: 2vh;
+            font-size: 3vh;
+            margin-bottom: 2.5vh;
             color: var(--primary-red);
             text-align: center;
+            font-weight: 900;
         }
         
         .admin-panel label {
             display: block;
-            font-size: 2vh;
-            margin-top: 1.5vh;
+            font-size: 2.5vh;
+            margin-top: 2vh;
             color: #333;
-            font-weight: bold;
+            font-weight: 700;
         }
         
         .admin-panel input {
             width: 100%;
-            font-size: 2vh;
-            padding: 1vh;
-            margin-top: 0.5vh;
-            border: 0.2vh solid var(--primary-red);
-            border-radius: 0.8vh;
+            font-size: 2.5vh;
+            padding: 1.5vh;
+            margin-top: 0.8vh;
+            border: 0.3vh solid var(--primary-red);
+            border-radius: 1vh;
+            font-weight: 600;
         }
         
         .admin-panel button {
-            margin-top: 2.5vh;
-            font-size: 2vh;
-            padding: 1.5vh;
+            margin-top: 3vh;
+            font-size: 2.5vh;
+            padding: 1.8vh;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: 1vh;
+            border-radius: 1.2vh;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
+            font-weight: 700;
         }
         
         .overlay {
@@ -297,50 +308,53 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: 2vh;
-            padding: 3vh;
-            box-shadow: 0 0 4vh rgba(0,0,0,0.5);
-            width: 80vw;
-            max-width: 400px;
+            border-radius: 2.5vh;
+            padding: 3.5vh;
+            box-shadow: 0 0 4.5vh rgba(0,0,0,0.6);
+            width: 85vw;
+            max-width: 450px;
             z-index: 1001;
             text-align: center;
         }
         
         .password-panel h3 {
-            font-size: 2.5vh;
-            margin-bottom: 2vh;
+            font-size: 3vh;
+            margin-bottom: 2.5vh;
             color: var(--primary-red);
+            font-weight: 900;
         }
         
         .password-panel input {
             width: 100%;
-            font-size: 2vh;
-            padding: 1.5vh;
-            margin-top: 0.5vh;
-            border: 0.2vh solid var(--primary-red);
-            border-radius: 0.8vh;
+            font-size: 2.5vh;
+            padding: 2vh;
+            margin-top: 0.8vh;
+            border: 0.3vh solid var(--primary-red);
+            border-radius: 1vh;
             text-align: center;
-            letter-spacing: 0.5vh;
+            letter-spacing: 0.8vh;
+            font-weight: 600;
         }
         
         .password-panel button {
-            margin-top: 2vh;
-            font-size: 2vh;
-            padding: 1.5vh;
+            margin-top: 2.5vh;
+            font-size: 2.5vh;
+            padding: 1.8vh;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: 1vh;
+            border-radius: 1.2vh;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
+            font-weight: 700;
         }
         
         .password-error {
             color: #ff0000;
-            font-size: 1.6vh;
-            margin-top: 1vh;
+            font-size: 2vh;
+            margin-top: 1.5vh;
             display: none;
+            font-weight: 600;
         }
         
         /* 连接状态指示器 */
@@ -350,19 +364,20 @@
             left: 1vh;
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: 0.5vh 1vh;
-            border-radius: 0.5vh;
-            font-size: 1.5vh;
+            padding: 0.8vh 1.5vh;
+            border-radius: 0.8vh;
+            font-size: 2vh;
             display: flex;
             align-items: center;
             z-index: 100;
+            font-weight: 600;
         }
         
         .connection-dot {
-            width: 0.8vh;
-            height: 0.8vh;
+            width: 1vh;
+            height: 1vh;
             border-radius: 50%;
-            margin-right: 0.5vh;
+            margin-right: 0.8vh;
             background-color: #4CAF50;
             animation: pulse 2s infinite;
         }
@@ -387,9 +402,23 @@
         .fade-in {
             animation: fadeIn 0.8s ease-out;
         }
+        
+        /* 针对电视设备的全屏兼容性 */
+        #fullscreenTrigger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
+
+<!-- 隐藏全屏触发器，用于电视兼容性 -->
+<div id="fullscreenTrigger"></div>
 
 <!-- 连接状态指示器 -->
 <div class="connection-status">
@@ -462,7 +491,7 @@
     <input type="password" id="passwordInput" placeholder="请输入密码" maxlength="20">
     <div class="password-error" id="passwordError">密码错误，请重新输入</div>
     <button id="submitPassword">确认</button>
-    <button id="cancelPassword" style="margin-top: 1vh; background-color: #666;">取消</button>
+    <button id="cancelPassword" style="margin-top: 1.5vh; background-color: #666;">取消</button>
 </div>
 
 <!-- 管理面板 -->
@@ -479,7 +508,7 @@
     <label>白银回收价(元/克)：</label>
     <input type="number" id="silverBuyInput">
     <button id="savePrices">保存设置</button>
-    <button id="closeAdmin" style="margin-top: 1vh; background-color: #666;">关闭</button>
+    <button id="closeAdmin" style="margin-top: 1.5vh; background-color: #666;">关闭</button>
 </div>
 
 <script>
@@ -614,29 +643,80 @@
         document.getElementById('rotateBtn').textContent = `旋转(${currentRotation}°)`;
     }
     
-    // 全屏功能
+    // 全屏功能 - 强化兼容性
     function toggleFullScreen() {
-        if (!document.fullscreenElement) {
-            // 进入全屏
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
+        const element = document.documentElement;
+        
+        // 尝试各种全屏API
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+            !document.mozFullScreenElement && !document.msFullscreenElement) {
+            
+            if (element.requestFullscreen) {
+                element.requestFullscreen().catch(err => {
+                    console.error('全屏请求失败:', err);
+                    showNotification('全屏模式不可用: ' + err.message);
+                });
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            } else {
+                // 电视设备兼容方案
+                showNotification('此设备不支持全屏模式');
             }
         } else {
             // 退出全屏
             if (document.exitFullscreen) {
                 document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
             }
         }
+    }
+    
+    // 显示通知
+    function showNotification(message) {
+        // 临时显示一个简单的通知
+        const notification = document.createElement('div');
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2vh;
+            border-radius: 1vh;
+            z-index: 10000;
+            font-size: 2.5vh;
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 3000);
     }
     
     // 更新全屏按钮文本
     function updateFullscreenButton() {
         const btn = document.getElementById('fullscreenBtn');
-        btn.textContent = document.fullscreenElement ? '退出全屏' : '全屏';
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || document.msFullscreenElement;
+        btn.textContent = isFullscreen ? '退出全屏' : '全屏';
     }
     
     // 监听全屏状态变化
     document.addEventListener('fullscreenchange', updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+    document.addEventListener('MSFullscreenChange', updateFullscreenButton);
     
     // 更新日期显示
     function updateDate() {
