@@ -22,6 +22,7 @@
             flex-direction: column;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             transition: transform 0.5s ease;
+            cursor: default; /* 正常鼠标光标 */
         }
 
         /* 全屏样式 */
@@ -38,6 +39,15 @@
             font-size: 1.6vh;
             z-index: 100;
             transition: all 0.3s;
+            opacity: 0; /* 初始隐藏 */
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        body.show-controls #fullscreen-toggle,
+        body.show-controls #rotate-button,
+        body.show-controls .gear {
+            opacity: 1;
+            visibility: visible;
         }
         #fullscreen-toggle:hover {
             background-color: rgba(255, 255, 255, 0.3);
@@ -57,6 +67,9 @@
             font-size: 1.6vh;
             z-index: 100;
             transition: all 0.3s;
+            opacity: 0; /* 初始隐藏 */
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
         }
         #rotate-button:hover {
             background-color: rgba(255, 255, 255, 0.3);
@@ -72,7 +85,7 @@
             flex: 0 0 12vh;
         }
         h1 {
-            font-size: 5.5vh; /* 增加门店名称字体大小 */
+            font-size: 5.5vh; /* 门店名称字体较大 */
             margin: 0;
             text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.3);
             line-height: 1.2;
@@ -80,7 +93,7 @@
             color: #ffd700;
         }
         .date {
-            font-size: 3vh; /* 增加日期显示字体大小 */
+            font-size: 3vh; /* 日期显示字体较大 */
             margin: 0.5vh 0;
             line-height: 1.2;
             font-weight: bold;
@@ -94,7 +107,7 @@
             font-size: 2.5vh;
             cursor: pointer;
             color: #ffd700;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             z-index: 1000;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 50%;
@@ -104,6 +117,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0; /* 初始隐藏 */
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s, transform 0.3s;
         }
         .gear:hover {
             transform: rotate(30deg);
@@ -178,6 +194,12 @@
             background-color: #fff;
         }
         
+        /* 单位字体调小 */
+        .unit {
+            font-size: 2vh;
+            color: #999;
+        }
+        
         /* 隐藏铂金、钯金、白银的销售价 */
         .hide-price {
             color: #ccc;
@@ -193,7 +215,7 @@
             flex: 0 0 4vh;
         }
         .footer {
-            font-size: 2.8vh;
+            font-size: 3.5vh;
             color: #ffd700;
             padding: 1vh 0;
             flex-shrink: 0;
@@ -272,6 +294,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.5);
             z-index: 998;
+            cursor: default;
         }
         
         /* 添加一些动画效果 */
@@ -305,6 +328,20 @@
                 height: 177.8vw; /* 16/9=1.778，基于宽度计算高度 */
             }
         }
+        
+        /* 同步提示 */
+        .sync-notice {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body class="rotate-0">
@@ -317,6 +354,9 @@
 
 <!-- 设置按钮 -->
 <div class="gear" onclick="toggleAdmin()">⚙</div>
+
+<!-- 同步提示 -->
+<div class="sync-notice" id="syncNotice">数据已同步</div>
 
 <!-- 页面头部 -->
 <header class="fade-in">
@@ -335,8 +375,8 @@
     <table>
         <tr>
             <th>商品</th>
-            <th>销售价(元/克)</th>
-            <th>回收价(元/克)</th>
+            <th>销售价<span class="unit">(元/克)</span></th>
+            <th>回收价<span class="unit">(元/克)</span></th>
         </tr>
         <tr>
             <td>黄金</td>
@@ -365,29 +405,67 @@
 <div class="update-time" id="updateTime">最后更新时间：加载中...</div>
 
 <!-- 底部标语 -->
-<div class="footer">有喜事，就有老凤祥</div>
+<div class="footer">有囍事，就有老凤祥</div> <!-- 将"喜"改为"囍" -->
 
 <!-- 管理面板和遮罩层 -->
 <div id="overlay" onclick="toggleAdmin()"></div>
 <div id="adminPanel">
     <h3>价格设置</h3>
-    <label>黄金销售价：</label><input type="number" id="goldSellInput">
-    <label>黄金回收价：</label><input type="number" id="goldBuyInput">
-    <label>铂金990回收价：</label><input type="number" id="platinumBuyInput">
-    <label>钯金990回收价：</label><input type="number" id="palladiumBuyInput">
-    <label>白银回收价：</label><input type="number" id="silverBuyInput">
+    <label>黄金销售价(元/克)：</label><input type="number" id="goldSellInput">
+    <label>黄金回收价(元/克)：</label><input type="number" id="goldBuyInput">
+    <label>铂金990回收价(元/克)：</label><input type="number" id="platinumBuyInput">
+    <label>钯金990回收价(元/克)：</label><input type="number" id="palladiumBuyInput">
+    <label>白银回收价(元/克)：</label><input type="number" id="silverBuyInput">
     <button onclick="savePrices()">保存设置</button>
 </div>
 
 <script>
+    // 全局变量
+    let currentRotation = 0;
+    const rotations = [0, 90, 180, 270];
+    let controlsTimeout;
+    let isShowingControls = false;
+    let isAdminMode = false;
+    
     // 页面加载完成后自动进入全屏模式
     window.addEventListener('DOMContentLoaded', (event) => {
         // 等待页面完全加载后尝试进入全屏
         setTimeout(() => {
             toggleFullScreen();
         }, 500);
+        
+        // 初始隐藏控制按钮
+        hideControls();
+        
+        // 监听鼠标移动显示控制按钮
+        document.addEventListener('mousemove', showControlsTemporarily);
+        
+        // 加载价格设置
+        loadPrices();
+        
+        // 开始同步数据
+        startDataSync();
     });
-
+    
+    // 自动隐藏控制按钮
+    function hideControls() {
+        document.body.classList.remove('show-controls');
+        isShowingControls = false;
+    }
+    
+    // 显示控制按钮一段时间
+    function showControlsTemporarily() {
+        if (isAdminMode) return; // 如果是管理员模式，不自动隐藏
+        
+        clearTimeout(controlsTimeout);
+        document.body.classList.add('show-controls');
+        isShowingControls = true;
+        
+        controlsTimeout = setTimeout(() => {
+            hideControls();
+        }, 3000);
+    }
+    
     // 全屏功能
     function toggleFullScreen() {
         const docEl = document.documentElement;
@@ -416,7 +494,7 @@
             }
         }
     }
-
+    
     // 更新全屏按钮文本
     function updateFullscreenButton() {
         const toggleBtn = document.getElementById('fullscreen-toggle');
@@ -426,20 +504,17 @@
             toggleBtn.textContent = '进入全屏';
         }
     }
-
+    
     // 监听全屏状态变化
     document.addEventListener('fullscreenchange', updateFullscreenButton);
     document.addEventListener('mozfullscreenchange', updateFullscreenButton);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
     document.addEventListener('msfullscreenchange', updateFullscreenButton);
-
+    
     // 为全屏按钮添加点击事件
     document.getElementById('fullscreen-toggle').addEventListener('click', toggleFullScreen);
     
     // 旋转功能
-    let currentRotation = 0;
-    const rotations = [0, 90, 180, 270];
-    
     function rotateContent() {
         // 获取当前旋转索引
         const currentIndex = rotations.indexOf(currentRotation);
@@ -456,7 +531,7 @@
     
     // 为旋转按钮添加点击事件
     document.getElementById('rotate-button').addEventListener('click', rotateContent);
-
+    
     // 更新日期显示
     function updateDate() {
         const now = new Date();
@@ -466,14 +541,17 @@
         document.getElementById('dateDisplay').innerText = `${y}年${m}月${d}日`;
     }
     updateDate();
-
+    
     // 显示/隐藏管理面板
     function toggleAdmin() {
         const panel = document.getElementById('adminPanel');
         const overlay = document.getElementById('overlay');
+        
         if (panel.style.display === 'block') {
             panel.style.display = 'none';
             overlay.style.display = 'none';
+            isAdminMode = false;
+            hideControls(); // 退出管理员模式后隐藏控制按钮
         } else {
             const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
             keys.forEach(k=>{
@@ -481,20 +559,41 @@
             });
             panel.style.display = 'block';
             overlay.style.display = 'block';
+            isAdminMode = true;
+            // 管理员模式下显示控制按钮
+            document.body.classList.add('show-controls');
         }
     }
-
+    
+    // 加载价格设置
+    function loadPrices() {
+        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        keys.forEach(k=>{
+            const value = localStorage.getItem(k);
+            if (value) {
+                document.getElementById(k).innerText = value;
+            }
+        });
+        document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || 518;
+        updateTimeLabel();
+    }
+    
     // 保存价格设置到localStorage
     function savePrices() {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
         keys.forEach(k=>{
             const val = parseFloat(document.getElementById(k+'Input').value);
-            if(!isNaN(val)) localStorage.setItem(k,val);
+            if(!isNaN(val)) {
+                localStorage.setItem(k, val);
+                // 同步到云端
+                syncToCloud();
+            }
         });
         updatePrices();
         toggleAdmin();
+        showSyncNotice();
     }
-
+    
     // 平滑数字动画效果
     function animateValue(el, start, end, duration=600) {
         const range = end - start;
@@ -508,13 +607,13 @@
         }
         requestAnimationFrame(frame);
     }
-
+    
     // 更新最后更新时间显示
     function updateTimeLabel() {
         const now = new Date();
         document.getElementById('updateTime').innerText = "最后更新时间：" + now.toLocaleTimeString();
     }
-
+    
     // 更新所有价格显示
     function updatePrices(data={}) {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
@@ -529,7 +628,63 @@
         document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || data.goldSell || 518;
         updateTimeLabel();
     }
-
+    
+    // 显示同步通知
+    function showSyncNotice() {
+        const notice = document.getElementById('syncNotice');
+        notice.style.display = 'block';
+        setTimeout(() => {
+            notice.style.display = 'none';
+        }, 2000);
+    }
+    
+    // 模拟云同步 - 使用 localStorage 模拟(实际应该使用服务器API)
+    function syncToCloud() {
+        const goldPrices = {
+            goldSell: localStorage.getItem('goldSell'),
+            goldBuy: localStorage.getItem('goldBuy'),
+            platinumBuy: localStorage.getItem('platinumBuy'),
+            palladiumBuy: localStorage.getItem('palladiumBuy'),
+            silverBuy: localStorage.getItem('silverBuy')
+        };
+        
+        // 模拟延迟上传到云端
+        setTimeout(() => {
+            // 在实际应用中，这里应该发送到服务器
+            console.log('数据已上传到云端:', goldPrices);
+        }, 500);
+    }
+    
+    // 从云端同步数据
+    function syncFromCloud() {
+        // 模拟从云端获取数据
+        setTimeout(() => {
+            // 在实际应用中，这里应该从服务器获取数据
+            const lastSync = localStorage.getItem('lastSync');
+            const currentPrices = {
+                goldSell: localStorage.getItem('goldSell'),
+                goldBuy: localStorage.getItem('goldBuy'),
+                platinumBuy: localStorage.getItem('platinumBuy'),
+                palladiumBuy: localStorage.getItem('palladiumBuy'),
+                silverBuy: localStorage.getItem('silverBuy')
+            };
+            
+            // 模拟检查是否需要更新
+            const shouldUpdate = true; // 在实际应用中，应根据时间戳或版本判断
+            
+            if (shouldUpdate) {
+                updatePrices(currentPrices);
+                console.log('从云端同步数据完成');
+            }
+        }, 500);
+    }
+    
+    // 开始数据同步循环
+    function startDataSync() {
+        // 每30秒检查一次云端更新
+        setInterval(syncFromCloud, 30000);
+    }
+    
     // 自动获取实时黄金价格
     async function fetchAutoGold() {
         try {
@@ -546,7 +701,7 @@
             console.log('自动更新金价失败，使用本地缓存');
         }
     }
-
+    
     // 初始加载价格，然后每5秒自动更新一次
     updatePrices();
     setInterval(fetchAutoGold, 5000);
