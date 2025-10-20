@@ -824,8 +824,9 @@
         cancelAdmin();
     }
   
+
     function updatePrices(data = {}) {
-        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        const keys = ['goldSell', 'goldBuy', 'platinumBuy', 'palladiumBuy', 'silverBuy'];
         keys.forEach(k => {
             const el = document.getElementById(k);
             if (el) {
@@ -833,10 +834,15 @@
                 el.innerText = val;
             }
         });
-        document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || data.goldSell || 518;
+        
+        // 修复：优先使用Firebase实时数据，然后才是localStorage和默认值
+        const goldPriceVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 
+                            parseFloat(document.getElementById('goldPrice').innerText) || 518;
+        document.getElementById('goldPrice').innerText = goldPriceVal;
+        
         updateTimeLabel();
     }
-  
+ 
     function updateTimeLabel() {
         const now = new Date();
         document.getElementById('updateTime').innerText = "最后更新时间：" + now.toLocaleTimeString();
