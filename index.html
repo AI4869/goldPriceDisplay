@@ -13,13 +13,13 @@
             --white: #ffffff;
             --dark-red: #8a0000;
         }
-        
+      
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+      
         body {
             font-family: "Microsoft YaHei", sans-serif;
             background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
@@ -32,37 +32,35 @@
             align-items: center;
             justify-content: center;
         }
-        
+      
         /* 主容器 - 针对9:16比例优化 */
         .container {
-            width: 56.25vh; /* 9/16=0.5625 高度作为基准 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 56.25vh;  /* 高度作为基准，9/16=0.5625 */
             height: 100vh;
             max-width: 100vw;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transform: rotate(0deg);
-            transition: transform 0.5s ease;
+            transform: translate(-50%, -50%);
             background: inherit;
+            transition: transform 0.6s ease;
+            transform-origin: center center;
         }
-        
+      
         /* 旋转后的样式 */
         .container.rotated-90 {
-            transform: rotate(90deg);
-            width: 56.25vh; /* 9/16=0.5625 高度作为基准 */
-            height: 100vh;
-            /*width: 100vh;
-            height: 177.8vh; /* 16/9=1.778, 基于旋转后计算 */
-            transform-origin: center center;
+            transform: translate(-50%, -50%) rotate(90deg) scale(1.7778);
         }
-        
+
+        .container.rotated-180 {
+            transform: translate(-50%, -50%) rotate(180deg);
+            
+        }
+      
         .container.rotated-270 {
-            transform: rotate(270deg);
-            width: 100vh;
-            height: 177.8vh;
-            transform-origin: center center;
+            transform: translate(-50%, -50%) rotate(270deg) scale(1.7778);
         }
-        
+      
         /* 顶部标题区域 */
         .header {
             padding: 2vh 0;
@@ -72,7 +70,7 @@
             border-radius: 0 0 2vh 2vh;
             flex: 0 0 14vh;
         }
-        
+      
         .header h1 {
             font-size: 9vh;
             margin: 0;
@@ -80,13 +78,13 @@
             color: var(--gold);
             font-weight: 900;
         }
-        
+      
         .date {
             font-size: 3.2vh;
             margin-top: 0.8vh;
             font-weight: 700;
         }
-        
+      
         /* 今日金价显示区域 - 显著放大 */
         .gold-price-today {
             display: flex;
@@ -99,7 +97,7 @@
             flex: 0 0 18vh;
             border: 0.4vh solid rgba(255, 215, 0, 0.3);
         }
-        
+      
         .gold-price-label {
             font-size: 4.5vh;
             font-weight: 900;
@@ -107,7 +105,7 @@
             color: var(--gold);
             text-shadow: 0.2vh 0.2vh 0.6vh rgba(0,0,0,0.4);
         }
-        
+      
         .gold-price-value {
             font-size: 9vh;
             font-weight: 900;
@@ -115,7 +113,7 @@
             color: #fff9c4;
             letter-spacing: 0.1vw;
         }
-        
+      
         /* 价格表格区域 - 放大字体和粗细 */
         .price-table-container {
             background-color: var(--white);
@@ -133,7 +131,7 @@
             border: 0.4vh solid var(--gold);
             max-height: 45vh;
         }
-        
+      
         .price-table {
             width: 96%;
             margin: 0 auto;
@@ -141,12 +139,12 @@
             font-size: 3.2vh;
             font-weight: 700;
         }
-        
+      
         .price-table th, .price-table td {
             padding: 1.6vh 0;
             text-align: center;
         }
-        
+      
         .price-table th {
             border-bottom: 0.6vh solid var(--primary-red);
             font-size: 3.5vh;
@@ -154,30 +152,30 @@
             color: var(--primary-red);
             font-weight: 900;
         }
-        
+      
         .price-table td {
             color: #222;
             font-weight: 700;
         }
-        
+      
         .price-table tr:nth-child(even) {
             background-color: #fff4f4;
         }
-        
+      
         .price-table tr:nth-child(odd) {
             background-color: var(--white);
         }
-        
+      
         .price-unit {
             font-size: 2.2vh;
             color: #999;
         }
-        
+      
         .hide-price {
             color: #ccc;
             font-style: italic;
         }
-        
+      
         /* 底部区域 */
         .footer {
             font-size: 4vh;
@@ -191,7 +189,7 @@
             flex: 0 0 12vh;
             text-align: center;
         }
-        
+      
         .update-time {
             font-size: 2.5vh;
             color: #ffdfba;
@@ -200,7 +198,7 @@
             flex: 0 0 5vh;
             font-weight: 600;
         }
-        
+      
         /* 控制按钮 */
         .controls {
             position: absolute;
@@ -212,11 +210,11 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-        
+      
         body.show-controls .controls {
             opacity: 1;
         }
-        
+      
         .control-btn {
             background-color: rgba(255, 255, 255, 0.3);
             border: none;
@@ -229,11 +227,11 @@
             transition: background 0.3s;
             border: 0.2vh solid rgba(255,255,255,0.2);
         }
-        
+      
         .control-btn:hover {
             background-color: rgba(255, 255, 255, 0.4);
         }
-        
+      
         /* 管理面板 */
         .admin-panel {
             display: none;
@@ -250,7 +248,7 @@
             max-width: 550px;
             z-index: 1000;
         }
-        
+      
         .admin-panel h3 {
             font-size: 3vh;
             margin-bottom: 2.5vh;
@@ -258,7 +256,7 @@
             text-align: center;
             font-weight: 900;
         }
-        
+      
         .admin-panel label {
             display: block;
             font-size: 2.5vh;
@@ -266,7 +264,7 @@
             color: #333;
             font-weight: 700;
         }
-        
+      
         .admin-panel input {
             width: 100%;
             font-size: 2.5vh;
@@ -276,7 +274,7 @@
             border-radius: 1vh;
             font-weight: 600;
         }
-        
+      
         .admin-panel button {
             margin-top: 3vh;
             font-size: 2.5vh;
@@ -289,7 +287,7 @@
             width: 100%;
             font-weight: 700;
         }
-        
+      
         .overlay {
             display: none;
             position: fixed;
@@ -300,7 +298,7 @@
             background-color: rgba(0,0,0,0.5);
             z-index: 999;
         }
-        
+      
         /* 密码验证面板 */
         .password-panel {
             display: none;
@@ -318,14 +316,14 @@
             z-index: 1001;
             text-align: center;
         }
-        
+      
         .password-panel h3 {
             font-size: 3vh;
             margin-bottom: 2.5vh;
             color: var(--primary-red);
             font-weight: 900;
         }
-        
+      
         .password-panel input {
             width: 100%;
             font-size: 2.5vh;
@@ -337,7 +335,7 @@
             letter-spacing: 0.8vh;
             font-weight: 600;
         }
-        
+      
         .password-panel button {
             margin-top: 2.5vh;
             font-size: 2.5vh;
@@ -350,7 +348,7 @@
             width: 100%;
             font-weight: 700;
         }
-        
+      
         .password-error {
             color: #ff0000;
             font-size: 2vh;
@@ -358,7 +356,7 @@
             display: none;
             font-weight: 600;
         }
-        
+      
         /* 连接状态指示器 */
         .connection-status {
             position: fixed;
@@ -374,7 +372,7 @@
             z-index: 100;
             font-weight: 600;
         }
-        
+      
         .connection-dot {
             width: 1vh;
             height: 1vh;
@@ -383,28 +381,28 @@
             background-color: #4CAF50;
             animation: pulse 2s infinite;
         }
-        
+      
         .connection-dot.disconnected {
             background-color: #f44336;
             animation: none;
         }
-        
+      
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
-        
+      
         /* 动画效果 */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(2vh); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+      
         .fade-in {
             animation: fadeIn 0.8s ease-out;
         }
-        
+      
         /* 针对电视设备的全屏兼容性 */
         #fullscreenTrigger {
             position: absolute;
@@ -437,19 +435,19 @@
 
 <!-- 主内容容器 -->
 <div class="container rotated-90"> <!-- 默认旋转90度适配竖屏电视 -->
-    
+  
     <!-- 顶部标题 -->
     <div class="header fade-in">
         <h1>老凤祥珠宝</h1>
         <div class="date" id="dateDisplay"></div>
     </div>
-    
+  
     <!-- 今日金价 -->
     <div class="gold-price-today fade-in">
         <span class="gold-price-label">今日金价：</span>
         <div class="gold-price-value" id="goldPrice">518</div>
     </div>
-    
+  
     <!-- 价格表格 -->
     <div class="price-table-container fade-in">
         <table class="price-table">
@@ -480,7 +478,7 @@
             </tr>
         </table>
     </div>
-    
+  
     <!-- 底部信息 -->
     <div class="update-time" id="updateTime">最后更新时间：加载中...</div>
     <div class="footer">有囍事，就有老凤祥</div>
@@ -533,25 +531,25 @@
     let currentRotation = 90; // 默认旋转90度适配竖屏电视
     let isAdminMode = false;
     let controlsTimeout;
-    
+  
     // 设置默认密码
     const ADMIN_PASSWORD = "ai4869";
-    
+  
     // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', (event) => {
         // 初始化Firebase连接
         initializeFirebase();
-        
+      
         // 初始化界面
         loadPrices();
         updateDate();
         updateRotationButton();
-        
+      
         // 自动进入全屏
         setTimeout(() => {
             toggleFullScreen();
         }, 1000);
-        
+      
         // 设置控制按钮事件
         document.getElementById('rotateBtn').addEventListener('click', rotateContent);
         document.getElementById('fullscreenBtn').addEventListener('click', toggleFullScreen);
@@ -561,19 +559,19 @@
         document.getElementById('submitPassword').addEventListener('click', checkPassword);
         document.getElementById('cancelPassword').addEventListener('click', cancelPassword);
         document.getElementById('overlay').addEventListener('click', cancelPassword);
-        
+      
         // 密码输入框按下回车触发验证
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 checkPassword();
             }
         });
-        
+      
         // 控制按钮自动隐藏逻辑
         document.addEventListener('mousemove', showControlsTemporarily);
         hideControls(); // 初始隐藏
     });
-    
+  
     // 初始化Firebase连接
     function initializeFirebase() {
         // 监听连接状态
@@ -591,7 +589,7 @@
             }
         });
     }
-    
+  
     // 设置Firebase监听器
     function setupFirebaseListeners() {
         // 监听价格变化
@@ -601,7 +599,7 @@
             if (prices) {
                 console.log('从Firebase接收价格更新:', prices);
                 updatePrices(prices);
-                
+              
                 // 更新本地存储
                 Object.keys(prices).forEach(key => {
                     localStorage.setItem(key, prices[key]);
@@ -609,7 +607,7 @@
             }
         });
     }
-    
+  
     // 保存价格到Firebase
     function savePricesToFirebase(prices) {
         database.ref('prices').set(prices)
@@ -620,7 +618,7 @@
                 console.error('保存到Firebase失败:', error);
             });
     }
-    
+  
     // 旋转内容功能
     function rotateContent() {
         // 旋转角度选项：0°, 90°, 180°, 270°
@@ -628,31 +626,31 @@
         const currentIndex = rotations.indexOf(currentRotation);
         const nextIndex = (currentIndex + 1) % rotations.length;
         currentRotation = rotations[nextIndex];
-        
+      
         // 更新容器类名
         const container = document.querySelector('.container');
         container.className = 'container';
-        
+      
         if (currentRotation !== 0) {
             container.classList.add(`rotated-${currentRotation}`);
         }
-        
+      
         updateRotationButton();
     }
-    
+  
     // 更新旋转按钮文本
     function updateRotationButton() {
         document.getElementById('rotateBtn').textContent = `旋转(${currentRotation}°)`;
     }
-    
+  
     // 全屏功能 - 强化兼容性
     function toggleFullScreen() {
         const element = document.documentElement;
-        
+      
         // 尝试各种全屏API
         if (!document.fullscreenElement && !document.webkitFullscreenElement && 
             !document.mozFullScreenElement && !document.msFullscreenElement) {
-            
+          
             if (element.requestFullscreen) {
                 element.requestFullscreen().catch(err => {
                     console.error('全屏请求失败:', err);
@@ -681,7 +679,7 @@
             }
         }
     }
-    
+  
     // 显示通知
     function showNotification(message) {
         // 临时显示一个简单的通知
@@ -700,12 +698,12 @@
             font-size: 2.5vh;
         `;
         document.body.appendChild(notification);
-        
+      
         setTimeout(() => {
             document.body.removeChild(notification);
         }, 3000);
     }
-    
+  
     // 更新全屏按钮文本
     function updateFullscreenButton() {
         const btn = document.getElementById('fullscreenBtn');
@@ -713,13 +711,13 @@
                            document.mozFullScreenElement || document.msFullscreenElement;
         btn.textContent = isFullscreen ? '退出全屏' : '全屏';
     }
-    
+  
     // 监听全屏状态变化
     document.addEventListener('fullscreenchange', updateFullscreenButton);
     document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
     document.addEventListener('mozfullscreenchange', updateFullscreenButton);
     document.addEventListener('MSFullscreenChange', updateFullscreenButton);
-    
+  
     // 更新日期显示
     function updateDate() {
         const now = new Date();
@@ -728,7 +726,7 @@
         const d = String(now.getDate()).padStart(2,'0');
         document.getElementById('dateDisplay').innerText = `${y}年${m}月${d}日`;
     }
-    
+  
     // 密码验证功能
     function showPasswordPanel() {
         document.getElementById('passwordPanel').style.display = 'block';
@@ -737,12 +735,12 @@
         document.getElementById('passwordError').style.display = 'none';
         document.getElementById('passwordInput').focus();
     }
-    
+  
     function hidePasswordPanel() {
         document.getElementById('passwordPanel').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
     }
-    
+  
     function checkPassword() {
         const password = document.getElementById('passwordInput').value;
         if (password === ADMIN_PASSWORD) {
@@ -754,11 +752,11 @@
             document.getElementById('passwordInput').focus();
         }
     }
-    
+  
     function cancelPassword() {
         hidePasswordPanel();
     }
-    
+  
     // 管理面板功能
     function showAdminPanel() {
         const panel = document.getElementById('adminPanel');
@@ -770,30 +768,30 @@
         isAdminMode = true;
         document.body.classList.add('show-controls');
     }
-    
+  
     function cancelAdmin() {
         document.getElementById('adminPanel').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
         isAdminMode = false;
         hideControls();
     }
-    
+  
     // 控制按钮显示/隐藏功能
     function showControlsTemporarily() {
         if (isAdminMode) return;
-        
+      
         clearTimeout(controlsTimeout);
         document.body.classList.add('show-controls');
-        
+      
         controlsTimeout = setTimeout(() => {
             hideControls();
         }, 3000);
     }
-    
+  
     function hideControls() {
         document.body.classList.remove('show-controls');
     }
-    
+  
     // 价格管理功能
     function loadPrices() {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
@@ -806,11 +804,11 @@
         document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || 518;
         updateTimeLabel();
     }
-    
+  
     function savePrices() {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
         const prices = {};
-        
+      
         keys.forEach(k => {
             const val = parseFloat(document.getElementById(k+'Input').value);
             if(!isNaN(val)) {
@@ -818,14 +816,14 @@
                 prices[k] = val;
             }
         });
-        
+      
         // 同步到Firebase
         savePricesToFirebase(prices);
-        
+      
         updatePrices();
         cancelAdmin();
     }
-    
+  
     function updatePrices(data = {}) {
         const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
         keys.forEach(k => {
@@ -838,7 +836,7 @@
         document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || data.goldSell || 518;
         updateTimeLabel();
     }
-    
+  
     function updateTimeLabel() {
         const now = new Date();
         document.getElementById('updateTime').innerText = "最后更新时间：" + now.toLocaleTimeString();
@@ -846,3 +844,4 @@
 </script>
 </body>
 </html>
+
