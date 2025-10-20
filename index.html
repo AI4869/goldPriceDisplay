@@ -27,28 +27,54 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-        }
-        
-        /* 主容器 - 针对9:16竖屏优化 */
-        .container {
-            width: 100%;
-            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 1.5vh 2vw;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 主容器 - 针对9:16比例优化 */
+        .container {
+            width: 56.25vh; /* 9/16=0.5625 高度作为基准 */
+            height: 100vh;
+            max-width: 100vw;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transform: rotate(0deg);
+            transition: transform 0.5s ease;
+            background: inherit;
+        }
+        
+        /* 旋转后的样式 */
+        .container.rotated-90 {
+            transform: rotate(90deg);
+            width: 56.25vh; /* 9/16=0.5625 高度作为基准 */
+            height: 100vh;
+            /*width: 100vh;
+            height: 177.8vh; /* 16/9=1.778, 基于旋转后计算 */
+            transform-origin: center center;
+        }
+        
+        .container.rotated-270 {
+            transform: rotate(270deg);
+            width: 100vh;
+            height: 177.8vh;
+            transform-origin: center center;
         }
         
         /* 顶部标题区域 */
         .header {
+            padding: 2vh 0;
             text-align: center;
-            padding: 1.5vh 0;
             background: rgba(0, 0, 0, 0.1);
+            margin: 0 2vh;
             border-radius: 0 0 2vh 2vh;
+            flex: 0 0 14vh;
         }
         
         .header h1 {
-            font-size: 4.8vh;
+            font-size: 9vh;
             margin: 0;
             text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
             color: var(--gold);
@@ -56,71 +82,75 @@
         }
         
         .date {
-            font-size: 2.8vh;
-            margin-top: 0.6vh;
+            font-size: 3.2vh;
+            margin-top: 0.8vh;
             font-weight: 700;
         }
         
-        /* 今日金价显示区域 */
+        /* 今日金价显示区域 - 显著放大 */
         .gold-price-today {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 1.5vh 0;
+            margin: 1.5vh 2vh;
             background: rgba(255, 215, 0, 0.15);
+            padding: 2vh;
             border-radius: 1.5vh;
-            margin: 1vh 0;
+            flex: 0 0 18vh;
             border: 0.4vh solid rgba(255, 215, 0, 0.3);
         }
         
         .gold-price-label {
-            font-size: 4vh;
+            font-size: 4.5vh;
             font-weight: 900;
-            margin-right: 2vh;
+            margin-right: 3vh;
             color: var(--gold);
             text-shadow: 0.2vh 0.2vh 0.6vh rgba(0,0,0,0.4);
         }
         
         .gold-price-value {
-            font-size: 7.5vh;
+            font-size: 9vh;
             font-weight: 900;
             text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.5);
             color: #fff9c4;
             letter-spacing: 0.1vw;
         }
         
-        /* 价格表格区域 - 优化布局确保完全显示 */
+        /* 价格表格区域 - 放大字体和粗细 */
         .price-table-container {
             background-color: var(--white);
             color: var(--primary-red);
+            width: 94%;
+            margin: 0 auto;
+            border-radius: 2.5vh;
+            padding: 2vh 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            border-radius: 2.5vh;
+            justify-content: center;
             overflow: hidden;
-            margin: 1vh 0;
             box-shadow: 0 0.5vh 2vh rgba(0,0,0,0.4);
             border: 0.4vh solid var(--gold);
+            max-height: 45vh;
         }
         
         .price-table {
-            width: 100%;
-            height: 100%;
+            width: 96%;
+            margin: 0 auto;
             border-collapse: collapse;
-            font-size: 2.8vh;
+            font-size: 3.2vh;
             font-weight: 700;
-            table-layout: fixed;
         }
         
         .price-table th, .price-table td {
-            padding: 1.2vh 0;
+            padding: 1.6vh 0;
             text-align: center;
         }
         
         .price-table th {
-            border-bottom: 0.5vh solid var(--primary-red);
-            font-size: 3vh;
-            padding-bottom: 1vh;
+            border-bottom: 0.6vh solid var(--primary-red);
+            font-size: 3.5vh;
+            padding-bottom: 1.5vh;
             color: var(--primary-red);
             font-weight: 900;
         }
@@ -139,7 +169,7 @@
         }
         
         .price-unit {
-            font-size: 1.8vh;
+            font-size: 2.2vh;
             color: #999;
         }
         
@@ -150,21 +180,24 @@
         
         /* 底部区域 */
         .footer {
-            font-size: 3.5vh;
+            font-size: 4vh;
             color: var(--gold);
-            padding: 1.5vh 0;
+            padding: 1.8vh 0;
             font-weight: 900;
             text-shadow: 0.3vh 0.3vh 0.6vh rgba(0,0,0,0.4);
             background: rgba(0, 0, 0, 0.1);
+            margin: 0 2vh;
             border-radius: 2vh 2vh 0 0;
+            flex: 0 0 12vh;
             text-align: center;
         }
         
         .update-time {
-            font-size: 2.2vh;
+            font-size: 2.5vh;
             color: #ffdfba;
             text-align: center;
             padding: 1vh 0;
+            flex: 0 0 5vh;
             font-weight: 600;
         }
         
@@ -382,21 +415,6 @@
             opacity: 0;
             pointer-events: none;
         }
-        
-        /* 竖屏屏幕特定样式 */
-        @media (min-width: 2160px) and (max-width: 3840px) {
-            .container {
-                padding: 2vw 3vh;
-            }
-            
-            .price-table {
-                font-size: 3.2vh;
-            }
-            
-            .price-table th {
-                font-size: 3.2vh;
-            }
-        }
     </style>
 </head>
 <body>
@@ -418,7 +436,7 @@
 </div>
 
 <!-- 主内容容器 -->
-<div class="container">
+<div class="container rotated-90"> <!-- 默认旋转90度适配竖屏电视 -->
     
     <!-- 顶部标题 -->
     <div class="header fade-in">
@@ -527,6 +545,7 @@
         // 初始化界面
         loadPrices();
         updateDate();
+        updateRotationButton();
         
         // 自动进入全屏
         setTimeout(() => {
@@ -602,15 +621,27 @@
             });
     }
     
-    // 旋转功能调整，适应竖屏
+    // 旋转内容功能
     function rotateContent() {
+        // 旋转角度选项：0°, 90°, 180°, 270°
         const rotations = [0, 90, 180, 270];
         const currentIndex = rotations.indexOf(currentRotation);
         const nextIndex = (currentIndex + 1) % rotations.length;
         currentRotation = rotations[nextIndex];
         
-        document.body.style.transform = `rotate(${currentRotation}deg)`;
-        document.body.style.transformOrigin = 'center center';
+        // 更新容器类名
+        const container = document.querySelector('.container');
+        container.className = 'container';
+        
+        if (currentRotation !== 0) {
+            container.classList.add(`rotated-${currentRotation}`);
+        }
+        
+        updateRotationButton();
+    }
+    
+    // 更新旋转按钮文本
+    function updateRotationButton() {
         document.getElementById('rotateBtn').textContent = `旋转(${currentRotation}°)`;
     }
     
@@ -674,6 +705,20 @@
             document.body.removeChild(notification);
         }, 3000);
     }
+    
+    // 更新全屏按钮文本
+    function updateFullscreenButton() {
+        const btn = document.getElementById('fullscreenBtn');
+        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || document.msFullscreenElement;
+        btn.textContent = isFullscreen ? '退出全屏' : '全屏';
+    }
+    
+    // 监听全屏状态变化
+    document.addEventListener('fullscreenchange', updateFullscreenButton);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+    document.addEventListener('MSFullscreenChange', updateFullscreenButton);
     
     // 更新日期显示
     function updateDate() {
