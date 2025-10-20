@@ -12,7 +12,6 @@
             --gold: #ffd700;
             --white: #ffffff;
             --dark-red: #8a0000;
-            --tv-scale: 1.7; /* 针对电视屏幕的缩放系数 */
         }
         
         * {
@@ -22,135 +21,106 @@
         }
         
         body {
-            font-family: "Microsoft YaHei", "黑体", sans-serif;
+            font-family: "Microsoft YaHei", sans-serif;
             background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
             color: var(--white);
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            /* 针对电视屏幕优化抗锯齿 */
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            image-rendering: -webkit-optimize-contrast;
         }
         
-        /* 电视检测和缩放 */
-        @media screen and (min-width: 2800px) and (min-height: 2000px) {
-            :root {
-                --tv-scale: 2.2;
-            }
-        }
-        
-        /* 主容器 - 针对电视竖屏优化 */
+        /* 主容器 - 针对9:16竖屏优化 */
         .container {
-            width: calc(56.25vh * var(--tv-scale));
-            height: calc(100vh * var(--tv-scale));
-            max-width: 100vw;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            position: relative;
-            transform: rotate(90deg);
-            transform-origin: center center;
-            background: inherit;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 1.5vh 2vw;
         }
         
-        /* 顶部标题区域 - 电视优化 */
+        /* 顶部标题区域 */
         .header {
-            padding: calc(4vh * var(--tv-scale)) 0;
             text-align: center;
-            background: rgba(0, 0, 0, 0.2);
-            margin: 0 calc(4vh * var(--tv-scale));
-            border-radius: 0 0 calc(4vh * var(--tv-scale)) calc(4vh * var(--tv-scale));
-            flex: 0 0 calc(20vh * var(--tv-scale));
-            border: calc(0.4vh * var(--tv-scale)) solid var(--gold);
+            padding: 1.5vh 0;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 2vh 2vh;
         }
         
         .header h1 {
-            font-size: calc(8vh * var(--tv-scale));
+            font-size: 4.8vh;
             margin: 0;
-            text-shadow: calc(0.4vh * var(--tv-scale)) calc(0.4vh * var(--tv-scale)) calc(1vh * var(--tv-scale)) rgba(0,0,0,0.5);
+            text-shadow: 0.2vh 0.2vh 0.5vh rgba(0,0,0,0.3);
             color: var(--gold);
             font-weight: 900;
-            letter-spacing: calc(0.3vh * var(--tv-scale));
         }
         
         .date {
-            font-size: calc(5vh * var(--tv-scale));
-            margin-top: calc(1.5vh * var(--tv-scale));
+            font-size: 2.8vh;
+            margin-top: 0.6vh;
             font-weight: 700;
-            color: #ffdfba;
         }
         
-        /* 今日金价显示区域 - 电视优化 */
+        /* 今日金价显示区域 */
         .gold-price-today {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: calc(3vh * var(--tv-scale)) calc(4vh * var(--tv-scale));
-            background: rgba(255, 215, 0, 0.25);
-            padding: calc(3vh * var(--tv-scale));
-            border-radius: calc(3vh * var(--tv-scale));
-            flex: 0 0 calc(25vh * var(--tv-scale));
-            border: calc(0.6vh * var(--tv-scale)) solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 0 calc(3vh * var(--tv-scale)) rgba(255, 215, 0, 0.3);
+            padding: 1.5vh 0;
+            background: rgba(255, 215, 0, 0.15);
+            border-radius: 1.5vh;
+            margin: 1vh 0;
+            border: 0.4vh solid rgba(255, 215, 0, 0.3);
         }
         
         .gold-price-label {
-            font-size: calc(6.5vh * var(--tv-scale));
+            font-size: 4vh;
             font-weight: 900;
-            margin-right: calc(5vh * var(--tv-scale));
+            margin-right: 2vh;
             color: var(--gold);
-            text-shadow: calc(0.3vh * var(--tv-scale)) calc(0.3vh * var(--tv-scale)) calc(0.8vh * var(--tv-scale)) rgba(0,0,0,0.4);
+            text-shadow: 0.2vh 0.2vh 0.6vh rgba(0,0,0,0.4);
         }
         
         .gold-price-value {
-            font-size: calc(14vh * var(--tv-scale));
+            font-size: 7.5vh;
             font-weight: 900;
-            text-shadow: calc(0.5vh * var(--tv-scale)) calc(0.5vh * var(--tv-scale)) calc(1.5vh * var(--tv-scale)) rgba(0,0,0,0.6);
+            text-shadow: 0.3vh 0.3vh 0.8vh rgba(0,0,0,0.5);
             color: #fff9c4;
-            letter-spacing: calc(0.5vw * var(--tv-scale));
+            letter-spacing: 0.1vw;
         }
         
-        /* 价格表格区域 - 电视优化 */
+        /* 价格表格区域 - 优化布局确保完全显示 */
         .price-table-container {
             background-color: var(--white);
             color: var(--primary-red);
-            width: 92%;
-            margin: 0 auto;
-            border-radius: calc(4vh * var(--tv-scale));
-            padding: calc(3vh * var(--tv-scale)) 0;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            border-radius: 2.5vh;
             overflow: hidden;
-            box-shadow: 0 calc(0.8vh * var(--tv-scale)) calc(3vh * var(--tv-scale)) rgba(0,0,0,0.5);
-            border: calc(0.6vh * var(--tv-scale)) solid var(--gold);
-            max-height: calc(65vh * var(--tv-scale));
+            margin: 1vh 0;
+            box-shadow: 0 0.5vh 2vh rgba(0,0,0,0.4);
+            border: 0.4vh solid var(--gold);
         }
         
         .price-table {
-            width: 96%;
-            margin: 0 auto;
+            width: 100%;
+            height: 100%;
             border-collapse: collapse;
-            font-size: calc(5vh * var(--tv-scale));
+            font-size: 2.8vh;
             font-weight: 700;
+            table-layout: fixed;
         }
         
         .price-table th, .price-table td {
-            padding: calc(2.5vh * var(--tv-scale)) 0;
+            padding: 1.2vh 0;
             text-align: center;
         }
         
         .price-table th {
-            border-bottom: calc(0.8vh * var(--tv-scale)) solid var(--primary-red);
-            font-size: calc(5.5vh * var(--tv-scale));
-            padding-bottom: calc(2vh * var(--tv-scale));
+            border-bottom: 0.5vh solid var(--primary-red);
+            font-size: 3vh;
+            padding-bottom: 1vh;
             color: var(--primary-red);
             font-weight: 900;
         }
@@ -169,7 +139,7 @@
         }
         
         .price-unit {
-            font-size: calc(3.5vh * var(--tv-scale));
+            font-size: 1.8vh;
             color: #999;
         }
         
@@ -178,37 +148,33 @@
             font-style: italic;
         }
         
-        /* 底部区域 - 电视优化 */
+        /* 底部区域 */
         .footer {
-            font-size: calc(6vh * var(--tv-scale));
+            font-size: 3.5vh;
             color: var(--gold);
-            padding: calc(2.5vh * var(--tv-scale)) 0;
+            padding: 1.5vh 0;
             font-weight: 900;
-            text-shadow: calc(0.4vh * var(--tv-scale)) calc(0.4vh * var(--tv-scale)) calc(0.8vh * var(--tv-scale)) rgba(0,0,0,0.4);
-            background: rgba(0, 0, 0, 0.2);
-            margin: 0 calc(4vh * var(--tv-scale));
-            border-radius: calc(3vh * var(--tv-scale)) calc(3vh * var(--tv-scale)) 0 0;
-            flex: 0 0 calc(15vh * var(--tv-scale));
+            text-shadow: 0.3vh 0.3vh 0.6vh rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2vh 2vh 0 0;
             text-align: center;
-            border: calc(0.4vh * var(--tv-scale)) solid var(--gold);
         }
         
         .update-time {
-            font-size: calc(3.5vh * var(--tv-scale));
+            font-size: 2.2vh;
             color: #ffdfba;
             text-align: center;
-            padding: calc(1.5vh * var(--tv-scale)) 0;
-            flex: 0 0 calc(7vh * var(--tv-scale));
+            padding: 1vh 0;
             font-weight: 600;
         }
         
-        /* 控制按钮 - 电视优化 */
+        /* 控制按钮 */
         .controls {
             position: absolute;
-            top: calc(2vh * var(--tv-scale));
-            right: calc(4vh * var(--tv-scale));
+            top: 1.5vh;
+            right: 3vh;
             display: flex;
-            gap: calc(1.5vh * var(--tv-scale));
+            gap: 1vh;
             z-index: 100;
             opacity: 0;
             transition: opacity 0.3s;
@@ -222,20 +188,20 @@
             background-color: rgba(255, 255, 255, 0.3);
             border: none;
             color: white;
-            padding: calc(1.5vh * var(--tv-scale)) calc(2.5vh * var(--tv-scale));
-            border-radius: calc(1vh * var(--tv-scale));
+            padding: 1.2vh 2vh;
+            border-radius: 0.8vh;
             cursor: pointer;
-            font-size: calc(2.5vh * var(--tv-scale));
+            font-size: 2vh;
             font-weight: 600;
             transition: background 0.3s;
-            border: calc(0.3vh * var(--tv-scale)) solid rgba(255,255,255,0.2);
+            border: 0.2vh solid rgba(255,255,255,0.2);
         }
         
         .control-btn:hover {
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.4);
         }
         
-        /* 管理面板 - 电视优化 */
+        /* 管理面板 */
         .admin-panel {
             display: none;
             position: fixed;
@@ -244,18 +210,17 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: calc(3vh * var(--tv-scale));
-            padding: calc(4vh * var(--tv-scale));
-            box-shadow: 0 0 calc(6vh * var(--tv-scale)) rgba(0,0,0,0.7);
-            width: 80vw;
-            max-width: 800px;
+            border-radius: 2.5vh;
+            padding: 3.5vh;
+            box-shadow: 0 0 4.5vh rgba(0,0,0,0.6);
+            width: 85vw;
+            max-width: 550px;
             z-index: 1000;
-            font-size: calc(3.5vh * var(--tv-scale));
         }
         
         .admin-panel h3 {
-            font-size: calc(4.5vh * var(--tv-scale));
-            margin-bottom: calc(3vh * var(--tv-scale));
+            font-size: 3vh;
+            margin-bottom: 2.5vh;
             color: var(--primary-red);
             text-align: center;
             font-weight: 900;
@@ -263,30 +228,30 @@
         
         .admin-panel label {
             display: block;
-            font-size: calc(3.5vh * var(--tv-scale));
-            margin-top: calc(2.5vh * var(--tv-scale));
+            font-size: 2.5vh;
+            margin-top: 2vh;
             color: #333;
             font-weight: 700;
         }
         
         .admin-panel input {
             width: 100%;
-            font-size: calc(3.5vh * var(--tv-scale));
-            padding: calc(2vh * var(--tv-scale));
-            margin-top: calc(1vh * var(--tv-scale));
-            border: calc(0.4vh * var(--tv-scale)) solid var(--primary-red);
-            border-radius: calc(1.2vh * var(--tv-scale));
+            font-size: 2.5vh;
+            padding: 1.5vh;
+            margin-top: 0.8vh;
+            border: 0.3vh solid var(--primary-red);
+            border-radius: 1vh;
             font-weight: 600;
         }
         
         .admin-panel button {
-            margin-top: calc(4vh * var(--tv-scale));
-            font-size: calc(3.5vh * var(--tv-scale));
-            padding: calc(2.5vh * var(--tv-scale));
+            margin-top: 3vh;
+            font-size: 2.5vh;
+            padding: 1.8vh;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: calc(1.5vh * var(--tv-scale));
+            border-radius: 1.2vh;
             cursor: pointer;
             width: 100%;
             font-weight: 700;
@@ -299,11 +264,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0,0,0,0.5);
             z-index: 999;
         }
         
-        /* 密码验证面板 - 电视优化 */
+        /* 密码验证面板 */
         .password-panel {
             display: none;
             position: fixed;
@@ -312,43 +277,42 @@
             transform: translate(-50%, -50%);
             background-color: var(--white);
             color: #000;
-            border-radius: calc(3vh * var(--tv-scale));
-            padding: calc(4vh * var(--tv-scale));
-            box-shadow: 0 0 calc(6vh * var(--tv-scale)) rgba(0,0,0,0.7);
-            width: 80vw;
-            max-width: 600px;
+            border-radius: 2.5vh;
+            padding: 3.5vh;
+            box-shadow: 0 0 4.5vh rgba(0,0,0,0.6);
+            width: 85vw;
+            max-width: 450px;
             z-index: 1001;
             text-align: center;
-            font-size: calc(3.5vh * var(--tv-scale));
         }
         
         .password-panel h3 {
-            font-size: calc(4.5vh * var(--tv-scale));
-            margin-bottom: calc(3vh * var(--tv-scale));
+            font-size: 3vh;
+            margin-bottom: 2.5vh;
             color: var(--primary-red);
             font-weight: 900;
         }
         
         .password-panel input {
             width: 100%;
-            font-size: calc(3.5vh * var(--tv-scale));
-            padding: calc(2.5vh * var(--tv-scale));
-            margin-top: calc(1.5vh * var(--tv-scale));
-            border: calc(0.4vh * var(--tv-scale)) solid var(--primary-red);
-            border-radius: calc(1.2vh * var(--tv-scale));
+            font-size: 2.5vh;
+            padding: 2vh;
+            margin-top: 0.8vh;
+            border: 0.3vh solid var(--primary-red);
+            border-radius: 1vh;
             text-align: center;
-            letter-spacing: calc(1vh * var(--tv-scale));
+            letter-spacing: 0.8vh;
             font-weight: 600;
         }
         
         .password-panel button {
-            margin-top: calc(3vh * var(--tv-scale));
-            font-size: calc(3.5vh * var(--tv-scale));
-            padding: calc(2.5vh * var(--tv-scale));
+            margin-top: 2.5vh;
+            font-size: 2.5vh;
+            padding: 1.8vh;
             background-color: var(--primary-red);
             color: var(--white);
             border: none;
-            border-radius: calc(1.5vh * var(--tv-scale));
+            border-radius: 1.2vh;
             cursor: pointer;
             width: 100%;
             font-weight: 700;
@@ -356,22 +320,22 @@
         
         .password-error {
             color: #ff0000;
-            font-size: calc(3vh * var(--tv-scale));
-            margin-top: calc(2vh * var(--tv-scale));
+            font-size: 2vh;
+            margin-top: 1.5vh;
             display: none;
             font-weight: 600;
         }
         
-        /* 连接状态指示器 - 电视优化 */
+        /* 连接状态指示器 */
         .connection-status {
             position: fixed;
-            top: calc(1.5vh * var(--tv-scale));
-            left: calc(1.5vh * var(--tv-scale));
+            top: 1vh;
+            left: 1vh;
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            padding: calc(1vh * var(--tv-scale)) calc(2vh * var(--tv-scale));
-            border-radius: calc(1vh * var(--tv-scale));
-            font-size: calc(2.5vh * var(--tv-scale));
+            padding: 0.8vh 1.5vh;
+            border-radius: 0.8vh;
+            font-size: 2vh;
             display: flex;
             align-items: center;
             z-index: 100;
@@ -379,10 +343,10 @@
         }
         
         .connection-dot {
-            width: calc(1.5vh * var(--tv-scale));
-            height: calc(1.5vh * var(--tv-scale));
+            width: 1vh;
+            height: 1vh;
             border-radius: 50%;
-            margin-right: calc(1vh * var(--tv-scale));
+            margin-right: 0.8vh;
             background-color: #4CAF50;
             animation: pulse 2s infinite;
         }
@@ -400,35 +364,45 @@
         
         /* 动画效果 */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(3vh); }
+            from { opacity: 0; transform: translateY(2vh); }
             to { opacity: 1; transform: translateY(0); }
         }
         
         .fade-in {
-            animation: fadeIn 1s ease-out;
+            animation: fadeIn 0.8s ease-out;
         }
         
         /* 针对电视设备的全屏兼容性 */
-        .fullscreen-tip {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: calc(3vh * var(--tv-scale));
-            border-radius: calc(2vh * var(--tv-scale));
-            font-size: calc(4vh * var(--tv-scale));
-            z-index: 10000;
-            display: none;
-            text-align: center;
+        #fullscreenTrigger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 竖屏屏幕特定样式 */
+        @media (min-width: 2160px) and (max-width: 3840px) {
+            .container {
+                padding: 2vw 3vh;
+            }
+            
+            .price-table {
+                font-size: 3.2vh;
+            }
+            
+            .price-table th {
+                font-size: 3.2vh;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- 全屏提示 -->
-<div class="fullscreen-tip" id="fullscreenTip">正在进入全屏模式...</div>
+<!-- 隐藏全屏触发器，用于电视兼容性 -->
+<div id="fullscreenTrigger"></div>
 
 <!-- 连接状态指示器 -->
 <div class="connection-status">
@@ -501,7 +475,7 @@
     <input type="password" id="passwordInput" placeholder="请输入密码" maxlength="20">
     <div class="password-error" id="passwordError">密码错误，请重新输入</div>
     <button id="submitPassword">确认</button>
-    <button id="cancelPassword" style="margin-top: 2vh; background-color: #666;">取消</button>
+    <button id="cancelPassword" style="margin-top: 1.5vh; background-color: #666;">取消</button>
 </div>
 
 <!-- 管理面板 -->
@@ -518,7 +492,7 @@
     <label>白银回收价(元/克)：</label>
     <input type="number" id="silverBuyInput">
     <button id="savePrices">保存设置</button>
-    <button id="closeAdmin" style="margin-top: 2vh; background-color: #666;">关闭</button>
+    <button id="closeAdmin" style="margin-top: 1.5vh; background-color: #666;">关闭</button>
 </div>
 
 <script>
@@ -545,11 +519,6 @@
     // 设置默认密码
     const ADMIN_PASSWORD = "ai4869";
     
-    // 检测是否为电视设备
-    function isTvScreen() {
-        return window.screen.width >= 2800 && window.screen.height >= 2000;
-    }
-    
     // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', (event) => {
         // 初始化Firebase连接
@@ -558,13 +527,6 @@
         // 初始化界面
         loadPrices();
         updateDate();
-        updateRotationButton();
-        
-        // 如果是电视设备，调整缩放系数
-        if (isTvScreen()) {
-            document.documentElement.style.setProperty('--tv-scale', '2.2');
-            console.log('检测到电视设备，已调整显示缩放');
-        }
         
         // 自动进入全屏
         setTimeout(() => {
@@ -640,32 +602,21 @@
             });
     }
     
-    // 旋转内容功能
+    // 旋转功能调整，适应竖屏
     function rotateContent() {
-        // 旋转角度选项：0°, 90°, 180°, 270°
         const rotations = [0, 90, 180, 270];
         const currentIndex = rotations.indexOf(currentRotation);
         const nextIndex = (currentIndex + 1) % rotations.length;
         currentRotation = rotations[nextIndex];
         
-        // 更新容器类名
-        const container = document.querySelector('.container');
-        container.style.transform = `rotate(${currentRotation}deg)`;
-        
-        updateRotationButton();
-    }
-    
-    // 更新旋转按钮文本
-    function updateRotationButton() {
+        document.body.style.transform = `rotate(${currentRotation}deg)`;
+        document.body.style.transformOrigin = 'center center';
         document.getElementById('rotateBtn').textContent = `旋转(${currentRotation}°)`;
     }
     
-    // 全屏功能 - 电视优化
+    // 全屏功能 - 强化兼容性
     function toggleFullScreen() {
         const element = document.documentElement;
-        
-        // 显示全屏提示
-        document.getElementById('fullscreenTip').style.display = 'block';
         
         // 尝试各种全屏API
         if (!document.fullscreenElement && !document.webkitFullscreenElement && 
@@ -675,7 +626,6 @@
                 element.requestFullscreen().catch(err => {
                     console.error('全屏请求失败:', err);
                     showNotification('全屏模式不可用: ' + err.message);
-                    document.getElementById('fullscreenTip').style.display = 'none';
                 });
             } else if (element.webkitRequestFullscreen) {
                 element.webkitRequestFullscreen();
@@ -686,7 +636,6 @@
             } else {
                 // 电视设备兼容方案
                 showNotification('此设备不支持全屏模式');
-                document.getElementById('fullscreenTip').style.display = 'none';
             }
         } else {
             // 退出全屏
@@ -702,26 +651,6 @@
         }
     }
     
-    // 全屏状态变化处理
-    function handleFullscreenChange() {
-        document.getElementById('fullscreenTip').style.display = 'none';
-        updateFullscreenButton();
-    }
-    
-    // 监听全屏状态变化
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    
-    // 更新全屏按钮文本
-    function updateFullscreenButton() {
-        const btn = document.getElementById('fullscreenBtn');
-        const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement || 
-                           document.mozFullScreenElement || document.msFullscreenElement;
-        btn.textContent = isFullscreen ? '退出全屏' : '全屏';
-    }
-    
     // 显示通知
     function showNotification(message) {
         // 临时显示一个简单的通知
@@ -734,10 +663,10 @@
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.8);
             color: white;
-            padding: 3vh;
-            border-radius: 2vh;
+            padding: 2vh;
+            border-radius: 1vh;
             z-index: 10000;
-            font-size: 3.5vh;
+            font-size: 2.5vh;
         `;
         document.body.appendChild(notification);
         
