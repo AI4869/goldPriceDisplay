@@ -210,8 +210,19 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+        
+        /* 左下角全屏按钮 */
+        .fullscreen-control {
+            position: absolute;
+            bottom: 1.5vh;
+            left: 3vh;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
       
-        body.show-controls .controls {
+        body.show-controls .controls,
+        body.show-controls .fullscreen-control {
             opacity: 1;
         }
       
@@ -426,11 +437,15 @@
     <span id="connectionText">连接中...</span>
 </div>
 
-<!-- 控制面板 -->
+<!-- 控制面板（顶部右侧） -->
 <div class="controls">
     <button class="control-btn" id="rotateBtn">旋转(90°)</button>
-    <button class="control-btn" id="fullscreenBtn">全屏</button>
     <button class="control-btn" id="adminBtn">设置</button>
+</div>
+
+<!-- 左下角全屏按钮 -->
+<div class="fullscreen-control">
+    <button class="control-btn" id="fullscreenBtn">全屏</button>
 </div>
 
 <!-- 主内容容器 -->
@@ -850,4 +865,3 @@
 </script>
 </body>
 </html>
-
