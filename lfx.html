@@ -243,7 +243,7 @@
             background-color: rgba(255, 255, 255, 0.4);
         }
       
-        /* 管理面板 */
+        /* 可滑动的管理面板 */
         .admin-panel {
             display: none;
             position: fixed;
@@ -255,9 +255,30 @@
             border-radius: 2.5vh;
             padding: 3.5vh;
             box-shadow: 0 0 4.5vh rgba(0,0,0,0.6);
-            width: 85vw;
-            max-width: 550px;
+            width: 90vw;
+            max-width: 500px;
+            max-height: 80vh;
             z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .admin-panel::-webkit-scrollbar {
+            width: 0.8vh;
+        }
+        
+        .admin-panel::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 0.5vh;
+        }
+        
+        .admin-panel::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+            border-radius: 0.5vh;
+        }
+        
+        .admin-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-red);
         }
       
         .admin-panel h3 {
@@ -266,6 +287,11 @@
             color: var(--primary-red);
             text-align: center;
             font-weight: 900;
+            position: sticky;
+            top: 0;
+            background: var(--white);
+            padding: 1vh 0;
+            z-index: 1;
         }
       
         .admin-panel label {
@@ -285,9 +311,12 @@
             border-radius: 1vh;
             font-weight: 600;
         }
+        
+        .admin-panel .input-group {
+            margin-bottom: 1.5vh;
+        }
       
         .admin-panel button {
-            margin-top: 3vh;
             font-size: 2.5vh;
             padding: 1.8vh;
             background-color: var(--primary-red);
@@ -297,6 +326,7 @@
             cursor: pointer;
             width: 100%;
             font-weight: 700;
+            margin-top: 2vh;
         }
       
         .overlay {
@@ -470,7 +500,7 @@
     <!-- 今日金价 -->
     <div class="gold-price-today fade-in">
         <span class="gold-price-label">今日金价：</span>
-        <div class="gold-price-value" id="goldPrice">-</div>
+        <div class="gold-price-value" id="goldPrice">518</div>
     </div>
   
     <!-- 价格表格 -->
@@ -484,24 +514,24 @@
             <!-- 第1行固定显示黄金 -->
             <tr id="goldRow">
                 <td>黄金</td>
-                <td id="goldSell">-</td>
-                <td id="goldBuy">-</td>
+                <td id="goldSell">518</td>
+                <td id="goldBuy">488</td>
             </tr>
             <!-- 第2-4行用于轮播显示其他品类 -->
             <tr class="rotation-row">
                 <td id="product1">18K金</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice1">-</td>
+                <td id="buyPrice1">320</td>
             </tr>
             <tr class="rotation-row">
                 <td id="product2">14K金</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice2">-</td>
+                <td id="buyPrice2">260</td>
             </tr>
             <tr class="rotation-row">
                 <td id="product3">白银</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice3">-</td>
+                <td id="buyPrice3">6.5</td>
             </tr>
         </table>
     </div>
@@ -521,31 +551,51 @@
     <button id="cancelPassword" style="margin-top: 1.5vh; background-color: #666;">取消</button>
 </div>
 
-<!-- 管理面板 -->
+<!-- 可滑动的管理面板 -->
 <div class="admin-panel" id="adminPanel">
     <h3>价格设置</h3>
-    <label>黄金销售价(元/克)：</label>
-    <input type="number" id="goldSellInput">
-    <label>黄金回收价(元/克)：</label>
-    <input type="number" id="goldBuyInput">
-    <label>18K金回收价(元/克)：</label>
-    <input type="number" id="eighteenKBuyInput">
-    <label>14K金回收价(元/克)：</label>
-    <input type="number" id="fourteenKBuyInput">
-    <label>铂金990回收价(元/克)：</label>
-    <input type="number" id="platinum990BuyInput">
-    <label>铂金950回收价(元/克)：</label>
-    <input type="number" id="platinum950BuyInput">
-    <label>铂金900回收价(元/克)：</label>
-    <input type="number" id="platinum900BuyInput">
-    <label>钯金990回收价(元/克)：</label>
-    <input type="number" id="palladium990BuyInput">
-    <label>钯金950回收价(元/克)：</label>
-    <input type="number" id="palladium950BuyInput">
-    <label>白银回收价(元/克)：</label>
-    <input type="number" id="silverBuyInput">
+    <div class="input-group">
+        <label>黄金销售价(元/克)：</label>
+        <input type="number" id="goldSellInput">
+    </div>
+    <div class="input-group">
+        <label>黄金回收价(元/克)：</label>
+        <input type="number" id="goldBuyInput">
+    </div>
+    <div class="input-group">
+        <label>18K金回收价(元/克)：</label>
+        <input type="number" id="eighteenKBuyInput">
+    </div>
+    <div class="input-group">
+        <label>14K金回收价(元/克)：</label>
+        <input type="number" id="fourteenKBuyInput">
+    </div>
+    <div class="input-group">
+        <label>铂金990回收价(元/克)：</label>
+        <input type="number" id="platinum990BuyInput">
+    </div>
+    <div class="input-group">
+        <label>铂金950回收价(元/克)：</label>
+        <input type="number" id="platinum950BuyInput">
+    </div>
+    <div class="input-group">
+        <label>铂金900回收价(元/克)：</label>
+        <input type="number" id="platinum900BuyInput">
+    </div>
+    <div class="input-group">
+        <label>钯金990回收价(元/克)：</label>
+        <input type="number" id="palladium990BuyInput">
+    </div>
+    <div class="input-group">
+        <label>钯金950回收价(元/克)：</label>
+        <input type="number" id="palladium950BuyInput">
+    </div>
+    <div class="input-group">
+        <label>白银回收价(元/克)：</label>
+        <input type="number" id="silverBuyInput">
+    </div>
     <button id="savePrices">保存设置</button>
-    <button id="closeAdmin" style="margin-top: 1.5vh; background-color: #666;">关闭</button>
+    <button id="closeAdmin" style="background-color: #666;">关闭</button>
 </div>
 
 <script>
@@ -576,18 +626,18 @@
     // 品类轮播组配置
     const productGroups = [
         [
-            { id: 'eighteenKBuy', name: '18K金', price: 630 },
-            { id: 'fourteenKBuy', name: '14K金', price: 470 },
-            { id: 'silverBuy', name: '白银', price: 5 }
+            { id: 'eighteenKBuy', name: '18K金', price: 320 },
+            { id: 'fourteenKBuy', name: '14K金', price: 260 },
+            { id: 'silverBuy', name: '白银', price: 6.5 }
         ],
         [
-            { id: 'platinum990Buy', name: '铂金990', price: 300 },
-            { id: 'platinum950Buy', name: '铂金950', price: 285 },
-            { id: 'platinum900Buy', name: '铂金900', price: 270 }
+            { id: 'platinum990Buy', name: '铂金990', price: 265 },
+            { id: 'platinum950Buy', name: '铂金950', price: 250 },
+            { id: 'platinum900Buy', name: '铂金900', price: 240 }
         ],
         [
-            { id: 'palladium990Buy', name: '钯金990', price: 220 },
-            { id: 'palladium950Buy', name: '钯金950', price: 205 }
+            { id: 'palladium990Buy', name: '钯金990', price: 320 },
+            { id: 'palladium950Buy', name: '钯金950', price: 300 }
         ]
     ];
   
