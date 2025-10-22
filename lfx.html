@@ -500,7 +500,7 @@
     <!-- 今日金价 -->
     <div class="gold-price-today fade-in">
         <span class="gold-price-label">今日金价：</span>
-        <div class="gold-price-value" id="goldPrice">518</div>
+        <div class="gold-price-value" id="goldPrice">-</div>
     </div>
   
     <!-- 价格表格 -->
@@ -514,24 +514,24 @@
             <!-- 第1行固定显示黄金 -->
             <tr id="goldRow">
                 <td>黄金</td>
-                <td id="goldSell">518</td>
-                <td id="goldBuy">488</td>
+                <td id="goldSell">-</td>
+                <td id="goldBuy">-</td>
             </tr>
             <!-- 第2-4行用于轮播显示其他品类 -->
             <tr class="rotation-row">
                 <td id="product1">18K金</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice1">320</td>
+                <td id="buyPrice1">-</td>
             </tr>
             <tr class="rotation-row">
                 <td id="product2">14K金</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice2">260</td>
+                <td id="buyPrice2">-</td>
             </tr>
             <tr class="rotation-row">
                 <td id="product3">白银</td>
                 <td class="hide-price">-</td>
-                <td id="buyPrice3">6.5</td>
+                <td id="buyPrice3">-</td>
             </tr>
         </table>
     </div>
@@ -626,18 +626,18 @@
     // 品类轮播组配置
     const productGroups = [
         [
-            { id: 'eighteenKBuy', name: '18K金', price: 320 },
-            { id: 'fourteenKBuy', name: '14K金', price: 260 },
-            { id: 'silverBuy', name: '白银', price: 6.5 }
+            { id: 'eighteenKBuy', name: '18K金', price: 630 },
+            { id: 'fourteenKBuy', name: '14K金', price: 470 },
+            { id: 'silverBuy', name: '白银', price: 5 }
         ],
         [
-            { id: 'platinum990Buy', name: '铂金990', price: 265 },
-            { id: 'platinum950Buy', name: '铂金950', price: 250 },
-            { id: 'platinum900Buy', name: '铂金900', price: 240 }
+            { id: 'platinum990Buy', name: '铂金990', price: 300 },
+            { id: 'platinum950Buy', name: '铂金950', price: 285 },
+            { id: 'platinum900Buy', name: '铂金900', price: 270 }
         ],
         [
-            { id: 'palladium990Buy', name: '钯金990', price: 320 },
-            { id: 'palladium950Buy', name: '钯金950', price: 300 }
+            { id: 'palladium990Buy', name: '钯金990', price: 220 },
+            { id: 'palladium950Buy', name: '钯金950', price: 205 }
         ]
     ];
   
@@ -1063,3 +1063,4 @@
 </script>
 </body>
 </html>
+
