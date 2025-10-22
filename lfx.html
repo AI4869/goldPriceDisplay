@@ -414,6 +414,16 @@
             animation: fadeIn 0.8s ease-out;
         }
       
+        /* 轮播动画 */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+      
+        .slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+      
         /* 针对电视设备的全屏兼容性 */
         #fullscreenTrigger {
             position: absolute;
@@ -460,7 +470,7 @@
     <!-- 今日金价 -->
     <div class="gold-price-today fade-in">
         <span class="gold-price-label">今日金价：</span>
-        <div class="gold-price-value" id="goldPrice">518</div>
+        <div class="gold-price-value" id="goldPrice">-</div>
     </div>
   
     <!-- 价格表格 -->
@@ -471,25 +481,27 @@
                 <th>销售价<span class="price-unit">(元/克)</span></th>
                 <th>回收价<span class="price-unit">(元/克)</span></th>
             </tr>
-            <tr>
+            <!-- 第1行固定显示黄金 -->
+            <tr id="goldRow">
                 <td>黄金</td>
-                <td id="goldSell">518</td>
-                <td id="goldBuy">488</td>
+                <td id="goldSell">-</td>
+                <td id="goldBuy">-</td>
             </tr>
-            <tr>
-                <td>铂金990</td>
+            <!-- 第2-4行用于轮播显示其他品类 -->
+            <tr class="rotation-row">
+                <td id="product1">18K金</td>
                 <td class="hide-price">-</td>
-                <td id="platinumBuy">265</td>
+                <td id="buyPrice1">-</td>
             </tr>
-            <tr>
-                <td>钯金990</td>
+            <tr class="rotation-row">
+                <td id="product2">14K金</td>
                 <td class="hide-price">-</td>
-                <td id="palladiumBuy">320</td>
+                <td id="buyPrice2">-</td>
             </tr>
-            <tr>
-                <td>白银</td>
+            <tr class="rotation-row">
+                <td id="product3">白银</td>
                 <td class="hide-price">-</td>
-                <td id="silverBuy">6.5</td>
+                <td id="buyPrice3">-</td>
             </tr>
         </table>
     </div>
@@ -516,10 +528,20 @@
     <input type="number" id="goldSellInput">
     <label>黄金回收价(元/克)：</label>
     <input type="number" id="goldBuyInput">
+    <label>18K金回收价(元/克)：</label>
+    <input type="number" id="eighteenKBuyInput">
+    <label>14K金回收价(元/克)：</label>
+    <input type="number" id="fourteenKBuyInput">
     <label>铂金990回收价(元/克)：</label>
-    <input type="number" id="platinumBuyInput">
+    <input type="number" id="platinum990BuyInput">
+    <label>铂金950回收价(元/克)：</label>
+    <input type="number" id="platinum950BuyInput">
+    <label>铂金900回收价(元/克)：</label>
+    <input type="number" id="platinum900BuyInput">
     <label>钯金990回收价(元/克)：</label>
-    <input type="number" id="palladiumBuyInput">
+    <input type="number" id="palladium990BuyInput">
+    <label>钯金950回收价(元/克)：</label>
+    <input type="number" id="palladium950BuyInput">
     <label>白银回收价(元/克)：</label>
     <input type="number" id="silverBuyInput">
     <button id="savePrices">保存设置</button>
@@ -546,9 +568,28 @@
     let currentRotation = 90; // 默认旋转90度适配竖屏电视
     let isAdminMode = false;
     let controlsTimeout;
+    let currentGroup = 0; // 当前显示的轮播组索引
   
     // 设置默认密码
     const ADMIN_PASSWORD = "ai4869";
+  
+    // 品类轮播组配置
+    const productGroups = [
+        [
+            { id: 'eighteenKBuy', name: '18K金', price: 630 },
+            { id: 'fourteenKBuy', name: '14K金', price: 470 },
+            { id: 'silverBuy', name: '白银', price: 5 }
+        ],
+        [
+            { id: 'platinum990Buy', name: '铂金990', price: 300 },
+            { id: 'platinum950Buy', name: '铂金950', price: 285 },
+            { id: 'platinum900Buy', name: '铂金900', price: 270 }
+        ],
+        [
+            { id: 'palladium990Buy', name: '钯金990', price: 220 },
+            { id: 'palladium950Buy', name: '钯金950', price: 205 }
+        ]
+    ];
   
     // 页面加载完成后初始化
     window.addEventListener('DOMContentLoaded', (event) => {
@@ -559,6 +600,7 @@
         loadPrices();
         updateDate();
         updateRotationButton();
+        startRotation(); // 启动轮播
       
         // 自动进入全屏
         setTimeout(() => {
@@ -632,6 +674,62 @@
             .catch((error) => {
                 console.error('保存到Firebase失败:', error);
             });
+    }
+  
+    // 品类轮播功能
+    function startRotation() {
+        // 每10秒切换一次品类组
+        setInterval(() => {
+            currentGroup = (currentGroup + 1) % productGroups.length;
+            rotateProducts();
+        }, 10000);
+    }
+  
+    function rotateProducts() {
+        const rows = document.querySelectorAll('.rotation-row');
+        const currentGroupProducts = productGroups[currentGroup];
+        
+        // 为当前组添加足够的空行（如果当前组产品数量不足3个）
+        while (currentGroupProducts.length < 3) {
+            currentGroupProducts.push({ id: '', name: '', price: '' });
+        }
+        
+        // 更新每一行的内容和价格
+        rows.forEach((row, index) => {
+            if (index < currentGroupProducts.length) {
+                const product = currentGroupProducts[index];
+                const nameCell = row.querySelector('td:first-child');
+                const priceCell = row.querySelector('td:last-child');
+                
+                nameCell.textContent = product.name || '-';
+                priceCell.textContent = product.price || '-';
+                priceCell.id = product.id ? 'buy' + product.id.charAt(0).toUpperCase() + product.id.slice(1) : '';
+                
+                // 添加动画效果
+                row.classList.remove('slide-up');
+                void row.offsetWidth; // 触发重绘
+                row.classList.add('slide-up');
+            }
+        });
+        
+        // 从localStorage加载当前显示组的实时价格
+        updateRotationGroupPrices();
+    }
+  
+    // 更新轮播组的实时价格
+    function updateRotationGroupPrices() {
+        const currentGroupProducts = productGroups[currentGroup];
+        const rows = document.querySelectorAll('.rotation-row');
+        
+        currentGroupProducts.forEach((product, index) => {
+            if (index < rows.length && product.id) {
+                const storedPrice = localStorage.getItem(product.id);
+                const priceCell = rows[index].querySelector('td:last-child');
+                if (storedPrice && priceCell) {
+                    priceCell.textContent = parseFloat(storedPrice);
+                }
+            }
+        });
     }
   
     // 旋转内容功能
@@ -775,13 +873,36 @@
     // 管理面板功能
     function showAdminPanel() {
         const panel = document.getElementById('adminPanel');
-        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        const keys = [
+            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
+            'palladium990Buy', 'palladium950Buy', 'silverBuy'
+        ];
         keys.forEach(k => {
-            document.getElementById(k+'Input').value = localStorage.getItem(k) || document.getElementById(k).innerText;
+            const input = document.getElementById(k + 'Input');
+            if (input) {
+                input.value = localStorage.getItem(k) || getDefaultPrice(k);
+            }
         });
         panel.style.display = 'block';
         isAdminMode = true;
         document.body.classList.add('show-controls');
+    }
+  
+    function getDefaultPrice(key) {
+        const defaults = {
+            'goldSell': 518,
+            'goldBuy': 488,
+            'eighteenKBuy': 320,
+            'fourteenKBuy': 260,
+            'platinum990Buy': 265,
+            'platinum950Buy': 250,
+            'platinum900Buy': 240,
+            'palladium990Buy': 320,
+            'palladium950Buy': 300,
+            'silverBuy': 6.5
+        };
+        return defaults[key] || '';
     }
   
     function cancelAdmin() {
@@ -809,26 +930,45 @@
   
     // 价格管理功能
     function loadPrices() {
-        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        const keys = [
+            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
+            'palladium990Buy', 'palladium950Buy', 'silverBuy'
+        ];
         keys.forEach(k => {
             const value = localStorage.getItem(k);
             if (value) {
-                document.getElementById(k).innerText = value;
+                // 更新黄金价格的显示
+                if (k === 'goldSell') {
+                    document.getElementById('goldPrice').innerText = value;
+                }
+                // 更新其他元素的显示
+                const el = document.getElementById(k);
+                if (el) {
+                    el.innerText = value;
+                }
             }
         });
-        document.getElementById('goldPrice').innerText = localStorage.getItem('goldSell') || 518;
         updateTimeLabel();
+        rotateProducts(); // 初始化轮播显示
     }
   
     function savePrices() {
-        const keys = ['goldSell','goldBuy','platinumBuy','palladiumBuy','silverBuy'];
+        const keys = [
+            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
+            'palladium990Buy', 'palladium950Buy', 'silverBuy'
+        ];
         const prices = {};
       
         keys.forEach(k => {
-            const val = parseFloat(document.getElementById(k+'Input').value);
-            if(!isNaN(val)) {
-                localStorage.setItem(k, val);
-                prices[k] = val;
+            const input = document.getElementById(k + 'Input');
+            if (input) {
+                const val = parseFloat(input.value);
+                if(!isNaN(val)) {
+                    localStorage.setItem(k, val);
+                    prices[k] = val;
+                }
             }
         });
       
@@ -839,22 +979,30 @@
         cancelAdmin();
     }
   
-
     function updatePrices(data = {}) {
-        const keys = ['goldSell', 'goldBuy', 'platinumBuy', 'palladiumBuy', 'silverBuy'];
-        keys.forEach(k => {
+        // 更新黄金价格
+        const goldSellVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 518;
+        const goldBuyVal = data.goldBuy || parseFloat(localStorage.getItem('goldBuy')) || 488;
+        document.getElementById('goldPrice').innerText = goldSellVal;
+        document.getElementById('goldSell').innerText = goldSellVal;
+        document.getElementById('goldBuy').innerText = goldBuyVal;
+        
+        // 更新其他所有品类的价格
+        const otherKeys = [
+            'eighteenKBuy', 'fourteenKBuy', 'platinum990Buy', 'platinum950Buy', 
+            'platinum900Buy', 'palladium990Buy', 'palladium950Buy', 'silverBuy'
+        ];
+        
+        otherKeys.forEach(k => {
             const el = document.getElementById(k);
             if (el) {
-                const val = data[k] || parseFloat(localStorage.getItem(k)) || parseFloat(el.innerText);
+                const val = data[k] || parseFloat(localStorage.getItem(k)) || getDefaultPrice(k);
                 el.innerText = val;
             }
         });
         
-        // 修复：优先使用Firebase实时数据，然后才是localStorage和默认值
-        const goldPriceVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 
-                            parseFloat(document.getElementById('goldPrice').innerText) || 518;
-        document.getElementById('goldPrice').innerText = goldPriceVal;
-        
+        // 更新轮播组的价格显示
+        updateRotationGroupPrices();
         updateTimeLabel();
     }
  
