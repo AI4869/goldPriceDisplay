@@ -12,6 +12,10 @@
             --gold: #ffd700;
             --white: #ffffff;
             --dark-red: #8a0000;
+            --row-height: 8vh; /* 基础行高 */
+            --header-height: 8vh;
+            --first-col-width: 28%; /* 第一列宽度为30% */
+            --other-col-width: 36%; 
         }
       
         * {
@@ -114,7 +118,7 @@
             letter-spacing: 0.1vw;
         }
       
-        /* 价格表格区域 - 放大字体和粗细 */
+        /* 价格表格区域 - 固定比例布局 */
         .price-table-container {
             background-color: var(--white);
             color: var(--primary-red);
@@ -136,28 +140,48 @@
             width: 96%;
             margin: 0 auto;
             border-collapse: collapse;
-            font-size: 3.2vh;
             font-weight: 700;
+            table-layout: fixed; /* 固定表格布局 */
         }
       
         .price-table th, .price-table td {
-            padding: 1.6vh 0;
             text-align: center;
+            height: var(--row-height);
+            vertical-align: middle;
         }
       
         .price-table th {
             border-bottom: 0.6vh solid var(--primary-red);
-            font-size: 3.5vh;
-            padding-bottom: 1.5vh;
+            font-size: 3.4vh;
             color: var(--primary-red);
-            font-weight: 900;
+            font-weight: 800;
+            height: var(--header-height); 
         }
-      
+
         .price-table td {
             color: #222;
+            font-size: 3.2vh;
             font-weight: 700;
         }
       
+        /* 设置列宽 */
+        .price-table th:nth-child(1),
+        .price-table td:nth-child(1) {
+            width: var(--first-col-width); /* 第一列宽度为30% */
+        }
+      
+        .price-table th:nth-child(2),
+        .price-table td:nth-child(2),
+        .price-table th:nth-child(3),
+        .price-table td:nth-child(3) {
+            width: var(--other-col-width); /* 其他列宽度为35% */
+        }
+        
+        .price-table td:nth-child(2),
+        .price-table td:nth-child(3) {
+            font-size: 3.8vh; /* 第二列和第三列价格字体调大 */
+        }
+
         .price-table tr:nth-child(even) {
             background-color: #fff4f4;
         }
@@ -167,7 +191,7 @@
         }
       
         .price-unit {
-            font-size: 2.2vh;
+            font-size: 1.8vh;
             color: #999;
         }
       
@@ -626,18 +650,18 @@
     // 品类轮播组配置
     const productGroups = [
         [
-            { id: 'eighteenKBuy', name: '18K金', price: 630 },
-            { id: 'fourteenKBuy', name: '14K金', price: 470 },
-            { id: 'silverBuy', name: '白银', price: 5 }
+            { id: 'eighteenKBuy', name: '18K金', price: 0 },
+            { id: 'fourteenKBuy', name: '14K金', price: 0 },
+            { id: 'silverBuy', name: '白银', price: 0 }
         ],
         [
-            { id: 'platinum990Buy', name: '铂金990', price: 300 },
-            { id: 'platinum950Buy', name: '铂金950', price: 285 },
-            { id: 'platinum900Buy', name: '铂金900', price: 270 }
+            { id: 'platinum990Buy', name: '铂金990', price: 0 },
+            { id: 'platinum950Buy', name: '铂金950', price: 0 },
+            { id: 'platinum900Buy', name: '铂金900', price: 0 }
         ],
         [
-            { id: 'palladium990Buy', name: '钯金990', price: 220 },
-            { id: 'palladium950Buy', name: '钯金950', price: 205 }
+            { id: 'palladium990Buy', name: '钯金990', price: 0 },
+            { id: 'palladium950Buy', name: '钯金950', price: 0 }
         ]
     ];
   
@@ -1031,8 +1055,8 @@
   
     function updatePrices(data = {}) {
         // 更新黄金价格
-        const goldSellVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 518;
-        const goldBuyVal = data.goldBuy || parseFloat(localStorage.getItem('goldBuy')) || 488;
+        const goldSellVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 0;
+        const goldBuyVal = data.goldBuy || parseFloat(localStorage.getItem('goldBuy')) || 0;
         document.getElementById('goldPrice').innerText = goldSellVal;
         document.getElementById('goldSell').innerText = goldSellVal;
         document.getElementById('goldBuy').innerText = goldBuyVal;
@@ -1063,4 +1087,7 @@
 </script>
 </body>
 </html>
+
+
+
 
