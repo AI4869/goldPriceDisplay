@@ -14,8 +14,8 @@
             --dark-red: #8a0000;
             --row-height: 8vh; /* 基础行高 */
             --header-height: 8vh;
-            --first-col-width: 28%; /* 第一列宽度为30% */
-            --other-col-width: 36%; 
+            --first-col-width: 45%; /* 第一列宽度调整为40% */
+            --other-col-width: 55%; /* 第二列宽度调整为60% */
         }
       
         * {
@@ -125,7 +125,7 @@
             width: 94%;
             margin: 0 auto;
             border-radius: 2.5vh;
-            padding: 2vh 0;
+            padding: 1.5vh 0; /* 减少顶部和底部内边距，为备注留出空间 */
             flex-grow: 1;
             display: flex;
             flex-direction: column;
@@ -134,6 +134,7 @@
             box-shadow: 0 0.5vh 2vh rgba(0,0,0,0.4);
             border: 0.4vh solid var(--gold);
             max-height: 45vh;
+            position: relative; /* 为备注区域定位 */
         }
       
         .price-table {
@@ -164,24 +165,19 @@
             font-weight: 700;
         }
       
-        /* 设置列宽 */
+        /* 设置列宽 - 调整为两列 */
         .price-table th:nth-child(1),
         .price-table td:nth-child(1) {
-            width: var(--first-col-width); /* 第一列宽度为30% */
+            width: var(--first-col-width); /* 第一列宽度为45% */
         }
       
         .price-table th:nth-child(2),
-        .price-table td:nth-child(2),
-        .price-table th:nth-child(3),
-        .price-table td:nth-child(3) {
-            width: var(--other-col-width); /* 其他列宽度为35% */
+        .price-table td:nth-child(2) {
+            width: var(--other-col-width); /* 第二列宽度为55% */
+            font-size: 4vh; /* 第二列价格字体调大 */
         }
         
-        .price-table td:nth-child(2),
-        .price-table td:nth-child(3) {
-            font-size: 3.8vh; /* 第二列和第三列价格字体调大 */
-        }
-
+        /* 表格行样式 */
         .price-table tr:nth-child(even) {
             background-color: #fff4f4;
         }
@@ -190,14 +186,22 @@
             background-color: var(--white);
         }
       
+        /* 底部备注区域 */
+        .table-note {
+            padding: 0.8vh 2vh;
+            text-align: center;
+            font-size: 1.6vh;
+            color: #ccc;
+            font-style: italic;
+            border-top: 0.1vh dashed #ccc;
+            margin-top: 0.5vh;
+            background-color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+      
         .price-unit {
             font-size: 1.8vh;
             color: #999;
-        }
-      
-        .hide-price {
-            color: #ccc;
-            font-style: italic;
         }
       
         /* 底部区域 */
@@ -527,37 +531,41 @@
         <div class="gold-price-value" id="goldPrice">-</div>
     </div>
   
-    <!-- 价格表格 -->
+    <!-- 价格表格 - 修改为两列 -->
     <div class="price-table-container fade-in">
         <table class="price-table">
             <tr>
                 <th>商品</th>
-                <th>销售价<span class="price-unit">(元/克)</span></th>
                 <th>回收价<span class="price-unit">(元/克)</span></th>
+                <!-- 移除销售价列 -->
             </tr>
             <!-- 第1行固定显示黄金 -->
             <tr id="goldRow">
                 <td>黄金</td>
-                <td id="goldSell">-</td>
                 <td id="goldBuy">-</td>
+                <!-- 移除销售价单元格 -->
             </tr>
             <!-- 第2-4行用于轮播显示其他品类 -->
             <tr class="rotation-row">
                 <td id="product1">18K金</td>
-                <td class="hide-price">-</td>
                 <td id="buyPrice1">-</td>
+                <!-- 移除销售价单元格 -->
             </tr>
             <tr class="rotation-row">
                 <td id="product2">14K金</td>
-                <td class="hide-price">-</td>
                 <td id="buyPrice2">-</td>
+                <!-- 移除销售价单元格 -->
             </tr>
             <tr class="rotation-row">
                 <td id="product3">白银</td>
-                <td class="hide-price">-</td>
                 <td id="buyPrice3">-</td>
+                <!-- 移除销售价单元格 -->
             </tr>
         </table>
+        <!-- 新增表格底部备注 -->
+        <div class="table-note">
+            注：上述报价均未扣除损耗，具体损耗以旧料实际情况为准
+        </div>
     </div>
   
     <!-- 底部信息 -->
@@ -578,10 +586,7 @@
 <!-- 可滑动的管理面板 -->
 <div class="admin-panel" id="adminPanel">
     <h3>价格设置</h3>
-    <div class="input-group">
-        <label>黄金销售价(元/克)：</label>
-        <input type="number" id="goldSellInput">
-    </div>
+    <!-- 移除黄金销售价输入框 -->
     <div class="input-group">
         <label>黄金回收价(元/克)：</label>
         <input type="number" id="goldBuyInput">
@@ -773,10 +778,10 @@
             if (index < currentGroupProducts.length) {
                 const product = currentGroupProducts[index];
                 const nameCell = row.querySelector('td:first-child');
-                const priceCell = row.querySelector('td:last-child');
+                const priceCell = row.querySelector('td:nth-child(2)');
                 
-                nameCell.textContent = product.name || '-';
-                priceCell.textContent = product.price || '-';
+                nameCell.textContent = product.name;
+                priceCell.textContent = product.price;
                 priceCell.id = product.id ? 'buy' + product.id.charAt(0).toUpperCase() + product.id.slice(1) : '';
                 
                 // 添加动画效果
@@ -798,7 +803,7 @@
         currentGroupProducts.forEach((product, index) => {
             if (index < rows.length && product.id) {
                 const storedPrice = localStorage.getItem(product.id);
-                const priceCell = rows[index].querySelector('td:last-child');
+                const priceCell = rows[index].querySelector('td:nth-child(2)');
                 if (storedPrice && priceCell) {
                     priceCell.textContent = parseFloat(storedPrice);
                 }
@@ -947,8 +952,9 @@
     // 管理面板功能
     function showAdminPanel() {
         const panel = document.getElementById('adminPanel');
+        // 移除黄金销售价键
         const keys = [
-            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
             'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
             'palladium990Buy', 'palladium950Buy', 'silverBuy'
         ];
@@ -965,16 +971,15 @@
   
     function getDefaultPrice(key) {
         const defaults = {
-            'goldSell': 518,
-            'goldBuy': 488,
-            'eighteenKBuy': 320,
-            'fourteenKBuy': 260,
-            'platinum990Buy': 265,
-            'platinum950Buy': 250,
-            'platinum900Buy': 240,
-            'palladium990Buy': 320,
-            'palladium950Buy': 300,
-            'silverBuy': 6.5
+            'goldBuy': 0,
+            'eighteenKBuy': 0,
+            'fourteenKBuy': 0,
+            'platinum990Buy': 0,
+            'platinum950Buy': 0,
+            'platinum900Buy': 0,
+            'palladium990Buy': 0,
+            'palladium950Buy': 0,
+            'silverBuy': 0
         };
         return defaults[key] || '';
     }
@@ -1004,17 +1009,19 @@
   
     // 价格管理功能
     function loadPrices() {
+        // 移除黄金销售价键
         const keys = [
-            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
             'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
             'palladium990Buy', 'palladium950Buy', 'silverBuy'
         ];
         keys.forEach(k => {
             const value = localStorage.getItem(k);
             if (value) {
-                // 更新黄金价格的显示
-                if (k === 'goldSell') {
-                    document.getElementById('goldPrice').innerText = value;
+                // 只更新黄金价格的回收价，不再需要销售价
+                if (k === 'goldBuy') {
+                    const goldPrice = localStorage.getItem('goldSell'); // 黄金销售价作为今日金价
+                    document.getElementById('goldPrice').innerText = goldPrice || '-';
                 }
                 // 更新其他元素的显示
                 const el = document.getElementById(k);
@@ -1028,12 +1035,23 @@
     }
   
     function savePrices() {
+        // 移除黄金销售价键
         const keys = [
-            'goldSell', 'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
+            'goldBuy', 'eighteenKBuy', 'fourteenKBuy', 
             'platinum990Buy', 'platinum950Buy', 'platinum900Buy',
             'palladium990Buy', 'palladium950Buy', 'silverBuy'
         ];
         const prices = {};
+      
+        // 添加黄金销售价，它只用于今日金价显示，不用于表格
+        const goldSellInput = document.getElementById('goldSellInput');
+        if (goldSellInput && goldSellInput.value) {
+            const goldSellVal = parseFloat(goldSellInput.value);
+            if (!isNaN(goldSellVal)) {
+                localStorage.setItem('goldSell', goldSellVal);
+                prices['goldSell'] = goldSellVal;
+            }
+        }
       
         keys.forEach(k => {
             const input = document.getElementById(k + 'Input');
@@ -1058,7 +1076,7 @@
         const goldSellVal = data.goldSell || parseFloat(localStorage.getItem('goldSell')) || 0;
         const goldBuyVal = data.goldBuy || parseFloat(localStorage.getItem('goldBuy')) || 0;
         document.getElementById('goldPrice').innerText = goldSellVal;
-        document.getElementById('goldSell').innerText = goldSellVal;
+        // 只更新黄金的回收价单元格
         document.getElementById('goldBuy').innerText = goldBuyVal;
         
         // 更新其他所有品类的价格
@@ -1087,7 +1105,3 @@
 </script>
 </body>
 </html>
-
-
-
-
